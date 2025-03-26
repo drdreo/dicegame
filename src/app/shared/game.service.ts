@@ -2,7 +2,6 @@ import { inject, Injectable } from "@angular/core";
 import { filter, map } from "rxjs";
 import { SocketService } from "./socket.service";
 import {
-    CreateRoomAction,
     JoinedData,
     JoinRoomAction,
     ReconnectedData,
@@ -35,22 +34,13 @@ export class GameService {
         });
     }
 
-    createRoom(roomId: string | undefined): void {
-        const action: CreateRoomAction = {
-            type: "create_room",
-            data: {
-                roomId,
-                gameType: "dicegame",
-            },
-        };
-        this.socketService.sendMessage(action);
-    }
-
-    joinRoom(roomId: string): void {
+    joinRoom(playerName: string, roomId?: string): void {
         const action: JoinRoomAction = {
             type: "join_room",
             data: {
                 roomId,
+                playerName,
+                gameType: "dicegame",
             },
         };
         this.socketService.sendMessage(action);

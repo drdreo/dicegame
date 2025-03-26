@@ -107,7 +107,6 @@ export type GameState = {
 };
 
 export type WebSocketActions =
-    | CreateRoomAction
     | JoinRoomAction
     | ReconnectAction
     | RollAction
@@ -115,18 +114,12 @@ export type WebSocketActions =
     | SetAsideAction
     | EndTurnAction;
 
-export type CreateRoomAction = {
-    type: "create_room";
-    data: {
-        roomId: string | undefined;
-        gameType: "dicegame";
-    };
-};
-
 export type JoinRoomAction = {
     type: "join_room";
     data: {
-        roomId: string;
+        playerName: string;
+        roomId: string | undefined;
+        gameType: "dicegame";
     };
 };
 

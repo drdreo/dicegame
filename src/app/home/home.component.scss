@@ -1,0 +1,77 @@
+.lobby-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url("/images/home_screen.png") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    font-family: var(--font-family);
+}
+
+.lobby-content {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    border: 1px solid #444;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    box-sizing: border-box;
+}
+
+.generate-btn {
+    position: absolute;
+    right: .5rem;
+    top: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--color-primary);
+    cursor: pointer;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.join-btn {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.join-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.recent-rooms {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.error {
+    color: #ff4d4d;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
