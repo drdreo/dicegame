@@ -1,13 +1,13 @@
 import { AsyncPipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { provideIcons } from "@ng-icons/core";
-import { lucideCircleHelp, lucideRadioTower, lucideSignal, lucideUnplug } from "@ng-icons/lucide";
+import { provideIcons, NgIcon } from "@ng-icons/core";
+import { lucideSignal, lucideUnplug, lucideRadioTower, lucideCircleHelp } from "@ng-icons/lucide";
 import { map } from "rxjs";
 import { SocketService } from "../socket.service";
 
 @Component({
     selector: "connection-status",
-    imports: [AsyncPipe],
+    imports: [AsyncPipe, NgIcon],
     providers: [provideIcons({ lucideCircleHelp, lucideRadioTower, lucideSignal, lucideUnplug })],
     template: ` @switch (connectionStatus$ | async) {
         @case ("Connected") {
