@@ -7,6 +7,7 @@ import { SocketService } from "../socket.service";
 
 @Component({
     selector: "connection-status",
+    // careful to keep NgIcons
     imports: [AsyncPipe, NgIcon],
     providers: [provideIcons({ lucideCircleHelp, lucideRadioTower, lucideSignal, lucideUnplug })],
     template: ` @switch (connectionStatus$ | async) {
