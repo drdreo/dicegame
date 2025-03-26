@@ -14,8 +14,9 @@
     padding: 2rem;
     border-radius: var(--border-radius);
     width: 100%;
-    max-width: 400px;
+    max-width: 300px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(7px);
 }
 
 .form-group {
@@ -61,7 +62,8 @@ input {
 }
 
 .join-btn:disabled {
-    background-color: #cccccc;
+    background-color: var(--color-primary);
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
