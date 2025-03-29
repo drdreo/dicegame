@@ -1,0 +1,35 @@
+@use "sass:color";
+
+$stats-color: #bdb47b;
+
+table {
+    font-size: 24px;
+    border-collapse: collapse;
+
+    thead,
+    .total__goal {
+        color: $stats-color;
+        font-weight: bold;
+    }
+
+    th {
+        padding: 8px 16px;
+    }
+
+    td {
+        text-align: center;
+        padding: 8px 16px;
+    }
+
+    thead th:first-of-type,
+    tbody td:first-of-type {
+        text-align: right;
+        border-right: 1px solid color.adjust($stats-color, $whiteness: 10%);
+    }
+
+    thead th:last-of-type,
+    tbody td:last-of-type {
+        text-align: left;
+        border-left: 1px solid color.adjust($stats-color, $whiteness: 10%);
+    }
+}
