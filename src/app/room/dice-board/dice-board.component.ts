@@ -1,5 +1,5 @@
 import DiceBox from "@3d-dice/dice-box-threejs";
-import { AfterViewInit, Component, ElementRef, viewChild } from "@angular/core";
+import { AfterViewInit, Component } from "@angular/core";
 
 @Component({
     selector: "app-dice-board",
@@ -10,7 +10,6 @@ import { AfterViewInit, Component, ElementRef, viewChild } from "@angular/core";
 export class DiceBoardComponent implements AfterViewInit {
     private box!: DiceBox;
 
-    diceContainer = viewChild<ElementRef>("diceContainer");
     values = [1, 2, 3, 4, 5, 6];
     private colors = ["#00ffcb", "#ff6600", "#1d66af", "#7028ed", "#c4c427", "#d81128"];
 
