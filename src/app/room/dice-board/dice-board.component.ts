@@ -41,6 +41,7 @@ export class DiceBoardComponent implements AfterViewInit {
                 material: "wood",
             },
             light_intensity: 1,
+            sounds: true,
             gravity_multiplier: 300,
             baseScale: 75, // dice size
             strength: 0.5, // throw strength
