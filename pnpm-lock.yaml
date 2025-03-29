@@ -30,8 +30,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.3(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       '@drdreo/dice-box-threejs':
-        specifier: ^1.0.0
-        version: 1.0.0(cannon-es@0.20.0)(three@0.174.0)
+        specifier: ^1.0.2
+        version: 1.0.2(cannon-es@0.20.0)(three@0.174.0)
       '@ng-icons/core':
         specifier: ^31.2.0
         version: 31.2.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
@@ -777,8 +777,8 @@ packages:
     resolution: {integrity: sha512-4B4OijXeVNOPZlYA2oEwWOTkzyltLao+xbotHQeqN++Rv27Y6s818+n2Qkp8q+Fxhn0t/5lA5X1Mxktud8eayQ==}
     engines: {node: '>=14.17.0'}
 
-  '@drdreo/dice-box-threejs@1.0.0':
-    resolution: {integrity: sha512-vDcg9Pn8UCeFE+za691OmyF9Frocid/QDswbzo6+i/j/ml1sCVtBZoysKTu9s0Wy66vIpbUdl7wHv69OF9BTbg==}
+  '@drdreo/dice-box-threejs@1.0.2':
+    resolution: {integrity: sha512-8HvlNKiMW4+GNWiJ6F9UWDDrxQyk1RZks+/RZzo+W3T5cjNJwmm3x3XhM91c5pHFOcfsYJWbvkRhqN32gd2rSw==}
     peerDependencies:
       cannon-es: ^0.20.0
       three: ^0.143.0
@@ -5193,7 +5193,7 @@ snapshots:
 
   '@discoveryjs/json-ext@0.6.3': {}
 
-  '@drdreo/dice-box-threejs@1.0.0(cannon-es@0.20.0)(three@0.174.0)':
+  '@drdreo/dice-box-threejs@1.0.2(cannon-es@0.20.0)(three@0.174.0)':
     dependencies:
       cannon-es: 0.20.0
       three: 0.174.0

@@ -1,4 +1,4 @@
-import DiceBox from "@drdreo/dice-box-threejs";
+import { DiceBox, DiceEventData, DiceResults } from "@drdreo/dice-box-threejs";
 import { AfterViewInit, Component, ElementRef, viewChild } from "@angular/core";
 
 @Component({
@@ -8,7 +8,7 @@ import { AfterViewInit, Component, ElementRef, viewChild } from "@angular/core";
     styleUrl: "./dice-board.component.scss",
 })
 export class DiceBoardComponent implements AfterViewInit {
-    private box!: DiceBox;
+    private box?: DiceBox;
 
     private readonly diceContainer = viewChild<ElementRef>("diceContainer");
     private readonly hoverOverlay = viewChild<ElementRef>("hoverOverlay");
@@ -33,7 +33,7 @@ export class DiceBoardComponent implements AfterViewInit {
         //     },
         // });
 
-        this.box.roll(notation);
+        this.box?.roll(notation);
     }
 
     private async initializeDiceBox() {
@@ -42,8 +42,7 @@ export class DiceBoardComponent implements AfterViewInit {
             throw new Error("Cant init dice box without container");
         }
 
-        // TODO: refactor selector
-        this.box = new DiceBox("#dice-container", {
+        this.box = new DiceBox(viewContainer, {
             theme_customColorset: {
                 background: "#d0b990",
                 foreground: "#ffffff",
@@ -56,13 +55,13 @@ export class DiceBoardComponent implements AfterViewInit {
             baseScale: 75, // dice size
             strength: 0.5, // throw strength
             enableDiceSelection: true,
-            onRollComplete: (results: any) => {
+            onRollComplete: (results: DiceResults) => {
                 console.log(`onRollComplete: `, results);
             },
-            onDiceClick: (diceInfo: any) => {
+            onDiceClick: (diceInfo: DiceEventData) => {
                 console.log(`onDiceClick: `, diceInfo);
             },
-            onDiceHover: (diceInfo) => {
+            onDiceHover: (diceInfo: DiceEventData | null) => {
                 console.log(`onDiceHover: `, diceInfo);
 
                 const overlay = this.hoverOverlay()!.nativeElement;
