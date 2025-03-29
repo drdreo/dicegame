@@ -5,14 +5,20 @@
     position: relative;
 }
 
-#diceContainer {
+#dice-container {
     border: 1px solid #ccc;
     height: 80%;
     width: 90%;
+    //width: 100vw;
+    //height: 100vh;
+    //position: relative;
+    //overflow: hidden;
 }
 
 .roll-button {
     display: block;
+    position: absolute;
+    top: 0;
     margin: 20px auto;
     padding: 12px 24px;
     font-size: 18px;
@@ -22,12 +28,28 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #45a049;
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
 }
 
-.roll-button:hover {
-    background-color: #45a049;
-}
+.dice-hover-overlay {
+    position: absolute;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    border: 2px solid yellow;
+    border-radius: 50%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.1s ease-out, visibility 0.2s ease-out;
 
-.roll-button:active {
-    transform: scale(0.98);
+    &.visible {
+        opacity: 1;
+        visibility: visible;
+    }
 }

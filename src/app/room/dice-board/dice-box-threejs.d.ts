@@ -1,10 +1,10 @@
-declare module "@3d-dice/dice-box-threejs" {
+declare module "@drdreo/dice-box-threejs" {
     interface DiceBoxConfig {
         theme_customColorset?: {
             background: string;
             foreground: string;
-            texture: "marble" | "wood" | "glitter";
-            material: "metal" | "glass" | "plastic" | "wood";
+            texture: "marble" | "wood" | "glitter" | "metal" | "skulls" | "ice";
+            material: "metal" | "glass" | "plastic" | "wood" | "felt";
         };
         light_intensity?: number;
         gravity_multiplier?: number;
@@ -26,8 +26,8 @@ declare module "@3d-dice/dice-box-threejs" {
         onAddDiceComplete?: () => void;
         onRemoveDiceComplete?: () => void;
         enableDiceSelection?: boolean;
-        onDiceHover?: () => void;
-        onDiceClick?: () => void;
+        onDiceHover?: (diceInfo: any) => void;
+        onDiceClick?: (diceInfo: any) => void;
         onRollComplete?: (results: any) => void;
     }
 

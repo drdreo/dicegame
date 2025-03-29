@@ -1,5 +1,5 @@
-import DiceBox from "@3d-dice/dice-box-threejs";
-import { AfterViewInit, Component } from "@angular/core";
+import DiceBox from "@drdreo/dice-box-threejs";
+import { AfterViewInit, Component, ElementRef, viewChild } from "@angular/core";
 
 @Component({
     selector: "app-dice-board",
@@ -10,7 +10,8 @@ import { AfterViewInit, Component } from "@angular/core";
 export class DiceBoardComponent implements AfterViewInit {
     private box!: DiceBox;
 
-    values = [1, 2, 3, 4, 5, 6];
+    private readonly diceContainer = viewChild<ElementRef>("diceContainer");
+    private readonly hoverOverlay = viewChild<ElementRef>("hoverOverlay");
     private colors = ["#00ffcb", "#ff6600", "#1d66af", "#7028ed", "#c4c427", "#d81128"];
 
     ngAfterViewInit() {
@@ -18,6 +19,9 @@ export class DiceBoardComponent implements AfterViewInit {
     }
 
     roll() {
+        const values = [1, 2, 3, 4, 5, 6];
+        const notation = createNotationFromValues(values);
+
         const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)];
 
         // this.box.updateConfig({
@@ -29,24 +33,54 @@ export class DiceBoardComponent implements AfterViewInit {
         //     },
         // });
 
-        this.box.roll(`6d6@1,2,2,3,4,1`);
+        this.box.roll(notation);
     }
 
     private async initializeDiceBox() {
-        this.box = new DiceBox("#diceContainer", {
+        const viewContainer = this.diceContainer()?.nativeElement;
+        if (!viewContainer) {
+            throw new Error("Cant init dice box without container");
+        }
+
+        // TODO: refactor selector
+        this.box = new DiceBox("#dice-container", {
             theme_customColorset: {
                 background: "#d0b990",
                 foreground: "#ffffff",
                 texture: "wood",
-                material: "wood",
+                material: "felt",
             },
             light_intensity: 1,
             sounds: true,
             gravity_multiplier: 300,
             baseScale: 75, // dice size
             strength: 0.5, // throw strength
+            enableDiceSelection: true,
             onRollComplete: (results: any) => {
                 console.log(`onRollComplete: `, results);
+            },
+            onDiceClick: (diceInfo: any) => {
+                console.log(`onDiceClick: `, diceInfo);
+            },
+            onDiceHover: (diceInfo) => {
+                console.log(`onDiceHover: `, diceInfo);
+
+                const overlay = this.hoverOverlay()!.nativeElement;
+
+                if (diceInfo) {
+                    // Position the overlay using the screen coordinates
+                    overlay.style.left = `${diceInfo.screenPosition.x}px`;
+                    overlay.style.top = `${diceInfo.screenPosition.y}px`;
+
+                    // Scale the overlay based on the dice size
+                    const size = diceInfo.scale * 75; // Adjust multiplier as needed
+                    overlay.style.width = `${size}px`;
+                    overlay.style.height = `${size}px`;
+
+                    this.showOverlay(true);
+                } else {
+                    this.showOverlay(false);
+                }
             },
         });
 
@@ -60,4 +94,22 @@ export class DiceBoardComponent implements AfterViewInit {
             console.error(e);
         }
     }
+
+    /**
+     * Controls the visibility of the hover overlay
+     */
+    private showOverlay(visible: boolean): void {
+        const overlay = this.hoverOverlay()!.nativeElement;
+        if (visible) {
+            overlay.classList.add("visible");
+        } else {
+            overlay.classList.remove("visible");
+        }
+    }
+}
+
+// returns something like `6d6@1,2,2,3,4,1`
+function createNotationFromValues(values: number[]): string {
+    let count = values.length;
+    return `${count}d6@${values.join(",")}`;
 }
