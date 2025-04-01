@@ -1,10 +1,11 @@
 import { inject, Injectable } from "@angular/core";
-import { filter, map } from "rxjs";
+import { Router } from "@angular/router";
+import { filter, map, Subject } from "rxjs";
 import { SocketService } from "./socket.service";
 import {
     JoinedData,
     JoinRoomAction,
-    ReconnectedData,
+    ReconnectSuccessData,
     RollAction,
     TmpScoreData,
     WebSocketErrorEvent,
@@ -16,15 +17,21 @@ import {
 })
 export class GameService {
     private readonly socketService = inject(SocketService);
+    readonly joined$ = new Subject<JoinedData>();
+    readonly currentDice$ = this.gameState$.pipe(map((state) => state.dice));
     readonly gameState$ = this.socketService.messages$.pipe(
         filter((msg) => msg.type === "game_state"),
         map((msg) => msg.data),
     );
+    private readonly router = inject(Router);
 
     constructor() {
         this.socketService.messages$.subscribe((msg) => {
             if (
-                (msg.type === "error" || msg.type === "create_room_result" || msg.type === "join_room_result") &&
+                (msg.type === "error" ||
+                    msg.type === "create_room_result" ||
+                    msg.type === "join_room_result" ||
+                    msg.type === "reconnect_result") &&
                 !msg.success
             ) {
                 this.handleErrorMessage(msg);
@@ -53,20 +60,20 @@ export class GameService {
         this.socketService.sendMessage(action);
     }
 
-    private handleErrorMessage(message: WebSocketErrorEvent) {
-        console.error("Game error:", message.error);
+    rollDice() {
+        const action: RollAction = {
+            type: "roll",
+        };
+        this.socketService.sendMessage(action);
     }
 
-    private handleMessage(message: WebSocketSuccessEvent): void {
+    private handleErrorMessage(message: WebSocketErrorEvent) {
+        console.error("Game error:", message.error);
         switch (message.type) {
-            case "temp_score":
-                this.handleTempScore(message.data);
-                break;
-            case "joined":
-                this.handleJoined(message.data);
-                break;
-            case "reconnected":
-                this.handleReconnected(message.data);
+            case "reconnect_result":
+                this.socketService.clientId = undefined;
+                this.socketService.roomId = undefined;
+                this.router.navigate(["/"]);
                 break;
             default:
                 console.log("Unknown room message type:", message.type);
@@ -75,6 +82,26 @@ export class GameService {
 
     private handleTempScore(data: TmpScoreData): void {
         // Implement temp score handling
+    }
+
+    private handleMessage(message: WebSocketSuccessEvent): void {
+        switch (message.type) {
+            case "joined":
+                this.handleJoined(message.data);
+                break;
+            case "reconnect_result":
+                this.handleJoined(message.data);
+                break;
+            case "temp_score":
+                this.handleTempScore(message.data);
+                break;
+            case "game_state":
+                break;
+            case "join_room_result":
+                break;
+            default:
+                console.log("Unknown room message type:", message.type);
+        }
     }
 
     private handleJoined(data: JoinedData): void {
@@ -90,9 +117,10 @@ export class GameService {
 
         this.socketService.clientId = data.clientId;
         this.socketService.roomId = data.roomId;
+        this.joined$.next(data);
     }
 
-    private handleReconnected(data: ReconnectedData): void {
+    private handleReconnected(data: ReconnectSuccessData): void {
         if (!data) {
             console.warn("Received reconnected message with no data");
             return;
@@ -102,5 +130,8 @@ export class GameService {
             console.warn("Reconnected message missing clientId:", data);
             return;
         }
+
+        this.socketService.clientId = data.clientId;
+        this.socketService.roomId = data.roomId;
     }
 }

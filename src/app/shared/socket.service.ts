@@ -1,6 +1,7 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
+import { inject, Injectable } from "@angular/core";
+import { BehaviorSubject, filter, map, Subject } from "rxjs";
 import { ReconnectAction, WebSocketActions, WebSocketMessage } from "./types";
+import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root",
@@ -23,9 +24,14 @@ export class SocketService {
         return storedId ?? this._clientId;
     }
 
-    set clientId(id: string) {
+    set clientId(id: string | undefined) {
+        if (id) {
+            sessionStorage.setItem("clientId", id);
+        } else {
+            sessionStorage.removeItem("clientId");
+        }
+
         this._clientId = id;
-        sessionStorage.setItem("clientId", this._clientId);
     }
 
     private _roomId: string | undefined = undefined;
@@ -35,9 +41,13 @@ export class SocketService {
         return storedId ?? this._roomId;
     }
 
-    set roomId(id: string) {
+    set roomId(id: string | undefined) {
+        if (id) {
+            sessionStorage.setItem("roomId", id);
+        } else {
+            sessionStorage.removeItem("roomId");
+        }
         this._roomId = id;
-        sessionStorage.setItem("roomId", this._roomId);
     }
 
     sendMessage(message: WebSocketActions): void {

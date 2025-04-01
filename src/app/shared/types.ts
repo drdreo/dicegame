@@ -2,11 +2,11 @@ export type WebSocketSuccessEvent =
     | JoinedEvent
     | CreateRoomSuccessEvent
     | JoinRoomSuccessEvent
-    | ReconnectedEvent
+    | ReconnectSuccessEvent
     | GameStateEvent
     | TmpScoreEvent;
 
-export type WebSocketErrorEvent = ErrorEvent | CreateRoomFailureEvent | JoinRoomFailureEvent;
+export type WebSocketErrorEvent = ErrorEvent | CreateRoomFailureEvent | JoinRoomFailureEvent | ReconnectFailureEvent;
 export type WebSocketMessage = WebSocketSuccessEvent | WebSocketErrorEvent;
 
 /**
@@ -24,14 +24,14 @@ export type JoinedEvent = {
     data: JoinedData;
 };
 
-export type ReconnectedData = {
+export type ReconnectSuccessData = {
     clientId: string;
     roomId: string;
 };
-
-export type ReconnectedEvent = {
-    type: "reconnected";
-    data: ReconnectedData;
+export type ReconnectSuccessEvent = {
+    type: "reconnect_result";
+    success: true;
+    data: ReconnectSuccessData;
 };
 
 export type CreateRoomSuccessData = {
@@ -44,7 +44,10 @@ export type CreateRoomSuccessEvent = {
 };
 
 export type JoinRoomSuccessData = {
+    clientId: string;
     roomId: string;
+    gameType: string;
+    clients: number; // amount of people for whatever reason
 };
 
 export type JoinRoomSuccessEvent = {
@@ -85,6 +88,12 @@ export type ErrorEvent = {
 
 export type JoinRoomFailureEvent = {
     type: "join_room_result";
+    success: false;
+    error: string;
+};
+
+export type ReconnectFailureEvent = {
+    type: "reconnect_result";
     success: false;
     error: string;
 };

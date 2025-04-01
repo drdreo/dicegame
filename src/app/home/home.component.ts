@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { GameService } from "../shared/game.service";
@@ -13,13 +14,19 @@ import { GameService } from "../shared/game.service";
 export class HomeComponent implements OnInit {
     recentRooms = signal<string[]>([]);
     private readonly gameService = inject(GameService);
-
     private readonly fb = inject(FormBuilder);
     lobbyForm = this.fb.group({
         playerName: ["", [Validators.required, Validators.minLength(2)]],
         roomId: [""],
     });
     private readonly router = inject(Router);
+
+    constructor() {
+        this.gameService.joined$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
+            console.log("Joined room:", roomId);
+            this.router.navigate(["/room", roomId]);
+        });
+    }
 
     ngOnInit() {
         this.loadRecentRooms();
@@ -29,7 +36,6 @@ export class HomeComponent implements OnInit {
         if (this.lobbyForm.valid) {
             const { playerName, roomId } = this.lobbyForm.value;
             this.gameService.joinRoom(playerName!, roomId ?? undefined);
-            // this.router.navigate(["/game", roomId]);
         }
     }
 
