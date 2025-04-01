@@ -1,39 +1,24 @@
 export type WebSocketSuccessEvent =
-    | JoinedEvent
     | CreateRoomSuccessEvent
     | JoinRoomSuccessEvent
     | ReconnectSuccessEvent
+    // game specific events
     | GameStateEvent
     | TmpScoreEvent;
 
 export type WebSocketErrorEvent = ErrorEvent | CreateRoomFailureEvent | JoinRoomFailureEvent | ReconnectFailureEvent;
 export type WebSocketMessage = WebSocketSuccessEvent | WebSocketErrorEvent;
+export type WebSocketActions =
+    | JoinRoomAction
+    | ReconnectAction
+    | RollDiceAction
+    | SelectDiceAction
+    | SetDiceAsideAction
+    | EndTurnAction;
 
 /**
  * Success events
  */
-
-export type JoinedData = {
-    roomId: string;
-    clientId: string;
-};
-
-export type JoinedEvent = {
-    type: "joined";
-    success: true;
-    data: JoinedData;
-};
-
-export type ReconnectSuccessData = {
-    clientId: string;
-    roomId: string;
-};
-export type ReconnectSuccessEvent = {
-    type: "reconnect_result";
-    success: true;
-    data: ReconnectSuccessData;
-};
-
 export type CreateRoomSuccessData = {
     roomId: string;
 };
@@ -46,16 +31,26 @@ export type CreateRoomSuccessEvent = {
 export type JoinRoomSuccessData = {
     clientId: string;
     roomId: string;
-    gameType: string;
-    clients: number; // amount of people for whatever reason
 };
-
 export type JoinRoomSuccessEvent = {
     type: "join_room_result";
     success: true;
     data: JoinRoomSuccessData;
 };
 
+export type ReconnectSuccessData = {
+    clientId: string;
+    roomId: string;
+};
+export type ReconnectSuccessEvent = {
+    type: "reconnect_result";
+    success: true;
+    data: ReconnectSuccessData;
+};
+
+/**
+ * game-specific success events
+ */
 export type GameStateEvent = {
     type: "game_state";
     data: GameState;
@@ -64,7 +59,6 @@ export type GameStateEvent = {
 export type TmpScoreData = {
     score: number;
 };
-
 export type TmpScoreEvent = {
     type: "temp_score";
     success: true;
@@ -72,16 +66,10 @@ export type TmpScoreEvent = {
 };
 
 /**
- * Failure events
+ * Error events
  */
 export type CreateRoomFailureEvent = {
     type: "create_room_result";
-    success: false;
-    error: string;
-};
-
-export type ErrorEvent = {
-    type: "error";
     success: false;
     error: string;
 };
@@ -98,8 +86,12 @@ export type ReconnectFailureEvent = {
     error: string;
 };
 
-//*
-//
+export type ErrorEvent = {
+    type: "error";
+    success: false;
+    error: string;
+};
+
 export type Player = {
     id: string;
     score: number;
@@ -114,14 +106,6 @@ export type GameState = {
     turnScore: number;
     roundScore: number;
 };
-
-export type WebSocketActions =
-    | JoinRoomAction
-    | ReconnectAction
-    | RollAction
-    | SelectAction
-    | SetAsideAction
-    | EndTurnAction;
 
 export type JoinRoomAction = {
     type: "join_room";
@@ -140,18 +124,18 @@ export type ReconnectAction = {
     };
 };
 
-export type RollAction = {
+export type RollDiceAction = {
     type: "roll";
 };
 
-export type SelectAction = {
+export type SelectDiceAction = {
     type: "select";
     data: {
         diceIndex: number[];
     };
 };
 
-export type SetAsideAction = {
+export type SetDiceAsideAction = {
     type: "set_aside";
     data: {
         diceIndex: number[];

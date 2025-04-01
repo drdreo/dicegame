@@ -3,10 +3,13 @@ import { Router } from "@angular/router";
 import { filter, map, Subject } from "rxjs";
 import { SocketService } from "./socket.service";
 import {
+    EndTurnAction,
     JoinedData,
     JoinRoomAction,
-    ReconnectSuccessData,
-    RollAction,
+    JoinRoomSuccessData,
+    RollDiceAction,
+    SelectDiceAction,
+    SetDiceAsideAction,
     TmpScoreData,
     WebSocketErrorEvent,
     WebSocketSuccessEvent,
@@ -16,13 +19,13 @@ import {
     providedIn: "root",
 })
 export class GameService {
-    private readonly socketService = inject(SocketService);
     readonly joined$ = new Subject<JoinedData>();
     readonly currentDice$ = this.gameState$.pipe(map((state) => state.dice));
     readonly gameState$ = this.socketService.messages$.pipe(
         filter((msg) => msg.type === "game_state"),
         map((msg) => msg.data),
     );
+    private readonly socketService = inject(SocketService);
     private readonly router = inject(Router);
 
     constructor() {
@@ -36,7 +39,7 @@ export class GameService {
             ) {
                 this.handleErrorMessage(msg);
             } else {
-                this.handleMessage(msg);
+                this.handleSuccessMessage(msg);
             }
         });
     }
@@ -53,16 +56,36 @@ export class GameService {
         this.socketService.sendMessage(action);
     }
 
-    sendRollAction(): void {
-        const action: RollAction = {
+    rollDice() {
+        const action: RollDiceAction = {
             type: "roll",
         };
         this.socketService.sendMessage(action);
     }
 
-    rollDice() {
-        const action: RollAction = {
-            type: "roll",
+    selectDice(diceIndex: number[]) {
+        const action: SelectDiceAction = {
+            type: "select",
+            data: {
+                diceIndex,
+            },
+        };
+        this.socketService.sendMessage(action);
+    }
+
+    setDiceAside(diceIndex: number[]) {
+        const action: SetDiceAsideAction = {
+            type: "set_aside",
+            data: {
+                diceIndex,
+            },
+        };
+        this.socketService.sendMessage(action);
+    }
+
+    endTurn() {
+        const action: EndTurnAction = {
+            type: "end_turn",
         };
         this.socketService.sendMessage(action);
     }
@@ -80,38 +103,36 @@ export class GameService {
         }
     }
 
-    private handleTempScore(data: TmpScoreData): void {
-        // Implement temp score handling
-    }
-
-    private handleMessage(message: WebSocketSuccessEvent): void {
-        switch (message.type) {
-            case "joined":
-                this.handleJoined(message.data);
-                break;
+    private handleSuccessMessage(event: WebSocketSuccessEvent): void {
+        switch (event.type) {
+            case "join_room_result":
             case "reconnect_result":
-                this.handleJoined(message.data);
+                this.handleJoinRoom(event.data);
                 break;
-            case "temp_score":
-                this.handleTempScore(message.data);
-                break;
+
             case "game_state":
                 break;
-            case "join_room_result":
+            case "temp_score":
+                this.handleTempScore(event.data);
                 break;
             default:
-                console.log("Unknown room message type:", message.type);
+                console.log("Unknown room event type:", event.type);
         }
     }
 
-    private handleJoined(data: JoinedData): void {
+    private handleJoinRoom(data: JoinRoomSuccessData): void {
         if (!data) {
-            console.warn("Received joined message with no data");
+            console.warn("Received join_room_result with no data");
             return;
         }
 
         if (!data.clientId) {
-            console.warn("Joined message missing clientId:", data);
+            console.warn("join_room_result message missing clientId:", data);
+            return;
+        }
+
+        if (!data.roomId) {
+            console.warn("join_room_result message missing roomId:", data);
             return;
         }
 
@@ -120,18 +141,7 @@ export class GameService {
         this.joined$.next(data);
     }
 
-    private handleReconnected(data: ReconnectSuccessData): void {
-        if (!data) {
-            console.warn("Received reconnected message with no data");
-            return;
-        }
-
-        if (!data.clientId) {
-            console.warn("Reconnected message missing clientId:", data);
-            return;
-        }
-
-        this.socketService.clientId = data.clientId;
-        this.socketService.roomId = data.roomId;
+    private handleTempScore(data: TmpScoreData): void {
+        // Implement temp score handling
     }
 }
