@@ -16,7 +16,8 @@ export class MusicPlaylistComponent implements OnInit {
     private hasUserInteracted = false;
 
     ngOnInit() {
-        this.setupAudio();
+        // TODO: fix audio
+        // this.setupAudio();
 
         // Listen for any user interaction with the document
         document.addEventListener(

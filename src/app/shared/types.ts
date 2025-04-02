@@ -3,8 +3,7 @@ export type WebSocketSuccessEvent =
     | JoinRoomSuccessEvent
     | ReconnectSuccessEvent
     // game specific events
-    | GameStateEvent
-    | TmpScoreEvent;
+    | GameStateEvent;
 
 export type WebSocketErrorEvent = ErrorEvent | CreateRoomFailureEvent | JoinRoomFailureEvent | ReconnectFailureEvent;
 export type WebSocketMessage = WebSocketSuccessEvent | WebSocketErrorEvent;
@@ -56,15 +55,6 @@ export type GameStateEvent = {
     data: GameState;
 };
 
-export type TmpScoreData = {
-    score: number;
-};
-export type TmpScoreEvent = {
-    type: "temp_score";
-    success: true;
-    data: TmpScoreData;
-};
-
 /**
  * Error events
  */
@@ -102,9 +92,10 @@ export type GameState = {
     currentTurn: string; // player id
     winner: string;
     dice: number[];
+    selectedDice: number[]; // indexes of the dice
     setAside: number[];
-    turnScore: number;
-    roundScore: number;
+    turnScore: number; // maybe move to player
+    roundScore: number; // maybe move to player
 };
 
 export type JoinRoomAction = {
@@ -131,7 +122,7 @@ export type RollDiceAction = {
 export type SelectDiceAction = {
     type: "select";
     data: {
-        diceIndex: number[];
+        diceIndex: number;
     };
 };
 

@@ -76,6 +76,7 @@ export class DiceBoardComponent implements AfterViewInit {
             },
             onDiceClick: (diceInfo: DiceEventData) => {
                 console.log(`onDiceClick: `, diceInfo);
+                this.gameService.selectDice(diceInfo.id);
             },
             onDiceHover: (diceInfo: DiceEventData | null) => {
                 console.log(`onDiceHover: `, diceInfo);

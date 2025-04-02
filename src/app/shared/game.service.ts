@@ -1,16 +1,14 @@
 import { inject, Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { filter, map, Subject } from "rxjs";
+import { distinctUntilChanged, filter, map, Subject } from "rxjs";
 import { SocketService } from "./socket.service";
 import {
     EndTurnAction,
-    JoinedData,
     JoinRoomAction,
     JoinRoomSuccessData,
     RollDiceAction,
     SelectDiceAction,
     SetDiceAsideAction,
-    TmpScoreData,
     WebSocketErrorEvent,
     WebSocketSuccessEvent,
 } from "./types";
@@ -19,14 +17,22 @@ import {
     providedIn: "root",
 })
 export class GameService {
-    readonly joined$ = new Subject<JoinedData>();
-    readonly currentDice$ = this.gameState$.pipe(map((state) => state.dice));
+    private readonly router = inject(Router);
+    private readonly socketService = inject(SocketService);
+    readonly joined$ = new Subject<JoinRoomSuccessData>();
     readonly gameState$ = this.socketService.messages$.pipe(
         filter((msg) => msg.type === "game_state"),
         map((msg) => msg.data),
     );
-    private readonly socketService = inject(SocketService);
-    private readonly router = inject(Router);
+    readonly currentDice$ = this.gameState$.pipe(
+        map((state) => state.dice),
+        distinctUntilChanged((prev, curr) => {
+            // Return true if arrays are equal (to prevent emission)
+            if (!prev || !curr) return prev === curr;
+            if (prev.length !== curr.length) return false;
+            return prev.every((value, index) => value === curr[index]);
+        }),
+    );
 
     constructor() {
         this.socketService.messages$.subscribe((msg) => {
@@ -63,7 +69,7 @@ export class GameService {
         this.socketService.sendMessage(action);
     }
 
-    selectDice(diceIndex: number[]) {
+    selectDice(diceIndex: number) {
         const action: SelectDiceAction = {
             type: "select",
             data: {
@@ -112,9 +118,6 @@ export class GameService {
 
             case "game_state":
                 break;
-            case "temp_score":
-                this.handleTempScore(event.data);
-                break;
             default:
                 console.log("Unknown room event type:", event.type);
         }
@@ -139,9 +142,5 @@ export class GameService {
         this.socketService.clientId = data.clientId;
         this.socketService.roomId = data.roomId;
         this.joined$.next(data);
-    }
-
-    private handleTempScore(data: TmpScoreData): void {
-        // Implement temp score handling
     }
 }
