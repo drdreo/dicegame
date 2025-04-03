@@ -9,7 +9,7 @@ import { GameService } from "../shared/game.service";
     imports: [FormsModule, ReactiveFormsModule],
     templateUrl: "./home.component.html",
     styleUrl: "./home.component.scss",
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
     recentRooms = signal<string[]>([]);
@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
     private readonly fb = inject(FormBuilder);
     lobbyForm = this.fb.group({
         playerName: ["", [Validators.required, Validators.minLength(2)]],
-        roomId: [""],
+        roomId: [""]
     });
     private readonly router = inject(Router);
 

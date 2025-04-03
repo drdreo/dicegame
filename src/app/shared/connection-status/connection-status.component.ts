@@ -34,7 +34,7 @@ import { SocketService } from "../socket.service";
             right: 5px;
         }
     `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectionStatusComponent {
     private readonly socketService = inject(SocketService);
@@ -53,6 +53,6 @@ export class ConnectionStatusComponent {
                 default:
                     return "Unknown status";
             }
-        }),
+        })
     );
 }

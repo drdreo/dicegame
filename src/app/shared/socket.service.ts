@@ -4,7 +4,7 @@ import { ReconnectAction, WebSocketActions, WebSocketMessage } from "./types";
 import { Router } from "@angular/router";
 
 @Injectable({
-    providedIn: "root",
+    providedIn: "root"
 })
 export class SocketService {
     private socket: WebSocket | null = null;
@@ -67,8 +67,8 @@ export class SocketService {
                 type: "reconnect",
                 data: {
                     roomId,
-                    clientId,
-                },
+                    clientId
+                }
             };
 
             this.sendMessage(message);
@@ -80,6 +80,7 @@ export class SocketService {
     }
 
     private connectWebSocket = () => {
+        // TODO env
         const serverUrl = "localhost:6969";
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         const wsUrl = `${protocol}//${serverUrl}/ws`;

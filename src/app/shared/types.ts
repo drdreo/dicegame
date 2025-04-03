@@ -84,6 +84,7 @@ export type ErrorEvent = {
 
 export type Player = {
     id: string;
+    name: string;
     score: number;
 };
 
@@ -94,6 +95,7 @@ export type GameState = {
     dice: number[];
     selectedDice: number[]; // indexes of the dice
     setAside: number[];
+    targetScore: number;
     turnScore: number; // maybe move to player
     roundScore: number; // maybe move to player
 };

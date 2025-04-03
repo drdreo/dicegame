@@ -7,11 +7,11 @@ import { GameService } from "../../shared/game.service";
     selector: "app-dice-board",
     imports: [],
     templateUrl: "./dice-board.component.html",
-    styleUrl: "./dice-board.component.scss",
+    styleUrl: "./dice-board.component.scss"
 })
 export class DiceBoardComponent implements AfterViewInit {
     private readonly gameService = inject(GameService);
-    private currentDice = toSignal(this.gameService.currentDice$);
+    private currentDice = this.gameService.currentDice;
     private box?: DiceBox;
 
     private readonly diceContainer = viewChild<ElementRef>("diceContainer");
@@ -63,7 +63,7 @@ export class DiceBoardComponent implements AfterViewInit {
                 background: "#d0b990",
                 foreground: "#ffffff",
                 texture: "wood",
-                material: "felt",
+                material: "felt"
             },
             light_intensity: 1,
             sounds: true,
@@ -97,7 +97,7 @@ export class DiceBoardComponent implements AfterViewInit {
                 } else {
                     this.showOverlay(false);
                 }
-            },
+            }
         });
 
         try {

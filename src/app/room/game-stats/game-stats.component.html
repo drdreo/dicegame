@@ -1,26 +1,32 @@
-<table>
-    <thead>
-    <tr>
-        <th>You</th>
-        <th>Goal</th>
-        <th>Opponent</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr class="total">
-        <td class="total__you">0</td>
-        <td class="total__goal">1500</td>
-        <td class="total__opponent">0</td>
-    </tr>
-    <tr class="round">
-        <td class="round__you">{{ currentScore$ | async }}</td>
-        <td>Round</td>
-        <td class="round__opponent">0</td>
-    </tr>
-    <tr class="selected">
-        <td class="selected__you">0</td>
-        <td>Selected</td>
-        <td class="selected__opponent">0</td>
-    </tr>
-    </tbody>
-</table>
+@let e = enemy();
+@let y = you();
+@if (!y || !e) {
+    <p>Loading...</p>
+} @else {
+    <table>
+        <thead>
+        <tr>
+            <th>You</th>
+            <th>Goal</th>
+            <th>{{ e.name }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="total">
+            <td class="total__you">{{ y.score }}</td>
+            <td class="total__goal">{{ goal() }}</td>
+            <td class="total__opponent">{{ e.score }}</td>
+        </tr>
+        <tr class="round">
+            <td class="round__you">{{ you()?.score }}</td>
+            <td>Round</td>
+            <td class="round__opponent">{{ e.score }}</td>
+        </tr>
+        <tr class="selected">
+            <td class="selected__you">{{ y.score }}</td>
+            <td>Selected</td>
+            <td class="selected__opponent">{{ e.score }}</td>
+        </tr>
+        </tbody>
+    </table>
+}

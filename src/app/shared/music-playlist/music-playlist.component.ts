@@ -6,7 +6,7 @@ import { CommonModule } from "@angular/common";
     imports: [CommonModule],
     templateUrl: "./music-playlist.component.html",
     styleUrl: "./music-playlist.component.scss",
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MusicPlaylistComponent implements OnInit {
     isPlaying = signal(false);
@@ -28,7 +28,7 @@ export class MusicPlaylistComponent implements OnInit {
                     this.playMusic();
                 }
             },
-            { once: true },
+            { once: true }
         );
     }
 

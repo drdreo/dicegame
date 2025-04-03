@@ -1,6 +1,7 @@
-import { inject, Injectable } from "@angular/core";
+import { computed, inject, Injectable } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { distinctUntilChanged, filter, map, Subject } from "rxjs";
+import { filter, map, Subject } from "rxjs";
 import { SocketService } from "./socket.service";
 import {
     EndTurnAction,
@@ -10,29 +11,51 @@ import {
     SelectDiceAction,
     SetDiceAsideAction,
     WebSocketErrorEvent,
-    WebSocketSuccessEvent,
+    WebSocketSuccessEvent
 } from "./types";
 
+function areDiceEqual(prev: number[], curr: number[]): boolean {
+    if (!prev || !curr) return prev === curr;
+    if (prev.length !== curr.length) return false;
+    return prev.every((value, index) => value === curr[index]);
+}
+
 @Injectable({
-    providedIn: "root",
+    providedIn: "root"
 })
 export class GameService {
     private readonly router = inject(Router);
     private readonly socketService = inject(SocketService);
-    readonly joined$ = new Subject<JoinRoomSuccessData>();
-    readonly gameState$ = this.socketService.messages$.pipe(
-        filter((msg) => msg.type === "game_state"),
-        map((msg) => msg.data),
+
+    gameState = toSignal(
+        this.socketService.messages$.pipe(
+            filter((msg) => msg.type === "game_state"),
+            map((msg) => msg.data)
+        )
     );
-    readonly currentDice$ = this.gameState$.pipe(
-        map((state) => state.dice),
-        distinctUntilChanged((prev, curr) => {
-            // Return true if arrays are equal (to prevent emission)
-            if (!prev || !curr) return prev === curr;
-            if (prev.length !== curr.length) return false;
-            return prev.every((value, index) => value === curr[index]);
-        }),
+    currentDice = computed(
+        () => {
+            const gameState = this.gameState();
+            if (!gameState) return [];
+            return gameState.dice;
+        },
+        { equal: areDiceEqual }
     );
+
+    joined$ = new Subject<JoinRoomSuccessData>();
+    playerId = toSignal(this.joined$.pipe(map((data) => data.clientId)));
+    player = computed(() => {
+        const playerId = this.playerId();
+        const gameState = this.gameState();
+        if (!playerId || !gameState) return undefined;
+        return gameState.players[playerId];
+    });
+    enemy = computed(() => {
+        const playerId = this.playerId();
+        const gameState = this.gameState();
+        if (!playerId || !gameState) return undefined;
+        return Object.values(gameState.players).find((player) => player.id !== playerId);
+    });
 
     constructor() {
         this.socketService.messages$.subscribe((msg) => {
@@ -56,15 +79,15 @@ export class GameService {
             data: {
                 roomId,
                 playerName,
-                gameType: "dicegame",
-            },
+                gameType: "dicegame"
+            }
         };
         this.socketService.sendMessage(action);
     }
 
     rollDice() {
         const action: RollDiceAction = {
-            type: "roll",
+            type: "roll"
         };
         this.socketService.sendMessage(action);
     }
@@ -73,8 +96,8 @@ export class GameService {
         const action: SelectDiceAction = {
             type: "select",
             data: {
-                diceIndex,
-            },
+                diceIndex
+            }
         };
         this.socketService.sendMessage(action);
     }
@@ -83,15 +106,15 @@ export class GameService {
         const action: SetDiceAsideAction = {
             type: "set_aside",
             data: {
-                diceIndex,
-            },
+                diceIndex
+            }
         };
         this.socketService.sendMessage(action);
     }
 
     endTurn() {
         const action: EndTurnAction = {
-            type: "end_turn",
+            type: "end_turn"
         };
         this.socketService.sendMessage(action);
     }

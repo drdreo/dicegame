@@ -8,6 +8,6 @@ import { ConnectionStatusComponent } from "./shared/connection-status/connection
         <router-outlet></router-outlet>
         <connection-status />
     `,
-    imports: [RouterOutlet, ConnectionStatusComponent],
+    imports: [RouterOutlet, ConnectionStatusComponent]
 })
 export class AppComponent {}

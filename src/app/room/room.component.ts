@@ -9,7 +9,7 @@ import { GameStatsComponent } from "./game-stats/game-stats.component";
     imports: [DiceBoardComponent, GameStatsComponent, DiceBoardComponent, MusicPlaylistComponent],
     templateUrl: "./room.component.html",
     styleUrl: "./room.component.scss",
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RoomComponent {
     private readonly gameService = inject(GameService);
