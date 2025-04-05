@@ -35,9 +35,18 @@ export class GameService {
     );
     currentDice = computed(
         () => {
-            const gameState = this.gameState();
-            if (!gameState) return [];
-            return gameState.dice;
+            const state = this.gameState();
+            if (!state) return [];
+            return state.dice;
+        },
+        { equal: areDiceEqual }
+    );
+
+    selectedDice = computed(
+        () => {
+            const state = this.gameState();
+            if (!state) return [];
+            return state.selectedDice;
         },
         { equal: areDiceEqual }
     );

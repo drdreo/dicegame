@@ -2,4 +2,15 @@
 
 <button (click)="rollDice()" class="roll-button">Roll</button>
 
+@for (die of selectedDiceOverlay(); track $index) {
+    <div
+        #selectedOverlay
+        class="dice-select-overlay"
+        [style.left.px]="die.x"
+        [style.top.px]="die.y"
+        [style.width.px]="die.size + 4"
+        [style.height.px]="die.size + 4"
+    ></div>
+}
+
 <div #hoverOverlay class="dice-hover-overlay"></div>

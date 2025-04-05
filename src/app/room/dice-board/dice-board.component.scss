@@ -54,3 +54,12 @@
         visibility: visible;
     }
 }
+
+.dice-select-overlay {
+    position: absolute;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    border: 2px solid #00b7ff;
+    border-radius: 50%;
+    clip-path: circle(70% at bottom);
+}

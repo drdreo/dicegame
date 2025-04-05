@@ -1,5 +1,5 @@
 @let e = enemy();
-@let y = you();
+@let y = player();
 @if (!y || !e) {
     <p>Loading...</p>
 } @else {
@@ -18,7 +18,7 @@
             <td class="total__opponent">{{ e.score }}</td>
         </tr>
         <tr class="round">
-            <td class="round__you">{{ you()?.score }}</td>
+            <td class="round__you">{{ player()?.score }}</td>
             <td>Round</td>
             <td class="round__opponent">{{ e.score }}</td>
         </tr>

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
 import { GameService } from "../../shared/game.service";
 
 @Component({
@@ -11,7 +11,7 @@ import { GameService } from "../../shared/game.service";
 export class GameStatsComponent {
     private readonly gameService = inject(GameService);
 
-    you = this.gameService.player;
+    player = this.gameService.player;
     enemy = this.gameService.enemy;
 
     goal = computed(() => {
