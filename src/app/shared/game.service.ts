@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { filter, map, Subject } from "rxjs";
 import { SocketService } from "./socket.service";
 import {
+    AddBotAction,
     EndTurnAction,
     JoinRoomAction,
     JoinRoomSuccessData,
@@ -33,6 +34,13 @@ export class GameService {
             map((msg) => msg.data)
         )
     );
+
+    started = computed(() => {
+        const state = this.gameState();
+        if (!state) return false;
+        return state.started;
+    });
+
     currentDice = computed(
         () => {
             const state = this.gameState();
@@ -77,6 +85,7 @@ export class GameService {
                 (msg.type === "error" ||
                     msg.type === "create_room_result" ||
                     msg.type === "join_room_result" ||
+                    msg.type === "add_bot_result" ||
                     msg.type === "reconnect_result") &&
                 !msg.success
             ) {
@@ -95,6 +104,13 @@ export class GameService {
                 playerName,
                 gameType: "dicegame"
             }
+        };
+        this.socketService.sendMessage(action);
+    }
+
+    addBot() {
+        const action: AddBotAction = {
+            type: "add_bot"
         };
         this.socketService.sendMessage(action);
     }

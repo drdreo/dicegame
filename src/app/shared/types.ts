@@ -2,10 +2,16 @@ export type WebSocketSuccessEvent =
     | CreateRoomSuccessEvent
     | JoinRoomSuccessEvent
     | ReconnectSuccessEvent
+    | AddBotSuccessEvent
     // game specific events
     | GameStateEvent;
 
-export type WebSocketErrorEvent = ErrorEvent | CreateRoomFailureEvent | JoinRoomFailureEvent | ReconnectFailureEvent;
+export type WebSocketErrorEvent =
+    | ErrorEvent
+    | CreateRoomFailureEvent
+    | JoinRoomFailureEvent
+    | ReconnectFailureEvent
+    | AddBotFailureEvent;
 export type WebSocketMessage = WebSocketSuccessEvent | WebSocketErrorEvent;
 export type WebSocketActions =
     | JoinRoomAction
@@ -13,6 +19,7 @@ export type WebSocketActions =
     | RollDiceAction
     | SelectDiceAction
     | SetDiceAsideAction
+    | AddBotAction
     | EndTurnAction;
 
 /**
@@ -47,6 +54,11 @@ export type ReconnectSuccessEvent = {
     data: ReconnectSuccessData;
 };
 
+export type AddBotSuccessEvent = {
+    type: "add_bot_result";
+    success: true;
+};
+
 /**
  * game-specific success events
  */
@@ -76,6 +88,12 @@ export type ReconnectFailureEvent = {
     error: string;
 };
 
+export type AddBotFailureEvent = {
+    type: "add_bot_result";
+    success: false;
+    error: string;
+};
+
 export type ErrorEvent = {
     type: "error";
     success: false;
@@ -92,6 +110,7 @@ export type Player = {
 
 export type GameState = {
     players: { [key: string]: Player };
+    started: boolean;
     currentTurn: string; // player id
     winner: string;
     dice: number[];
@@ -139,4 +158,8 @@ export type SetDiceAsideAction = {
 
 export type EndTurnAction = {
     type: "end_turn";
+};
+
+export type AddBotAction = {
+    type: "add_bot";
 };

@@ -4,14 +4,24 @@ import { MusicPlaylistComponent } from "../shared/music-playlist/music-playlist.
 import { DiceBoardComponent } from "./dice-board/dice-board.component";
 import { GameActionsComponent } from "./game-actions/game-actions.component";
 import { GameStatsComponent } from "./game-stats/game-stats.component";
+import { WaitingRoomComponent } from "./waiting-room/waiting-room.component";
 
 @Component({
     selector: "app-room",
-    imports: [DiceBoardComponent, GameStatsComponent, DiceBoardComponent, MusicPlaylistComponent, GameActionsComponent],
+    imports: [
+        DiceBoardComponent,
+        GameStatsComponent,
+        DiceBoardComponent,
+        MusicPlaylistComponent,
+        GameActionsComponent,
+        WaitingRoomComponent
+    ],
     templateUrl: "./room.component.html",
     styleUrl: "./room.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RoomComponent {
     private readonly gameService = inject(GameService);
+
+    started = this.gameService.started;
 }

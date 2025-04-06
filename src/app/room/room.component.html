@@ -4,4 +4,8 @@
     <app-music-playlist />
     <app-game-stats class="game-stats" />
     <app-game-actions class="game-actions" />
+
+    @if (!started()) {
+        <app-waiting-room />
+    }
 </div>
