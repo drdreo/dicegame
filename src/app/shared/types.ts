@@ -86,6 +86,8 @@ export type Player = {
     id: string;
     name: string;
     score: number;
+    turnScore: number;
+    roundScore: number;
 };
 
 export type GameState = {

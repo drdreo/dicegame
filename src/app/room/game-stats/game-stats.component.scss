@@ -2,6 +2,11 @@
 
 $stats-color: #bdb47b;
 
+:host {
+    border: 1px solid white;
+    position: relative;
+}
+
 table {
     font-size: 24px;
     border-collapse: collapse;
