@@ -6,9 +6,9 @@
     <table>
         <thead>
         <tr>
-            <th>You</th>
+            <th [class.current-player-indicator]="currentPlayer()?.id === y.id">You</th>
             <th>Goal</th>
-            <th>{{ e.name }}</th>
+            <th [class.current-player-indicator]="currentPlayer()?.id === e.id">{{ e.name }}</th>
         </tr>
         </thead>
         <tbody>

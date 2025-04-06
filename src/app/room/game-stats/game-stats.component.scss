@@ -33,3 +33,16 @@ table {
         border-left: 1px solid color.adjust($stats-color, $whiteness: 10%);
     }
 }
+
+.current-player-indicator {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: -50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: red;
+        content: "v";
+    }
+}

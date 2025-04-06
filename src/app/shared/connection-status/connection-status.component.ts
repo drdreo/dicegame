@@ -12,7 +12,7 @@ import { SocketService } from "../socket.service";
     providers: [provideIcons({ lucideCircleHelp, lucideRadioTower, lucideSignal, lucideUnplug })],
     template: ` @switch (connectionStatus$ | async) {
         @case ("Connected") {
-            <ng-icon name="lucideSignal" />
+            <ng-icon name="lucideSignal" color="white" />
         }
         @case ("Connecting") {
             <ng-icon name="lucideRadioTower" />
@@ -21,7 +21,7 @@ import { SocketService } from "../socket.service";
             <ng-icon name="lucideUnplug" />
         }
         @case ("Disconnected") {
-            <ng-icon name="lucideUnplug" />
+            <ng-icon name="lucideUnplug" color="red" />
         }
         @default {
             <ng-icon name="lucideCircleHelp" />

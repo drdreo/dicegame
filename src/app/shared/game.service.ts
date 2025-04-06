@@ -65,6 +65,11 @@ export class GameService {
         if (!playerId || !gameState) return undefined;
         return Object.values(gameState.players).find((player) => player.id !== playerId);
     });
+    currentPlayer = computed(() => {
+        const state = this.gameState();
+        if (!state) return undefined;
+        return state.players[state.currentTurn];
+    });
 
     constructor() {
         this.socketService.messages$.subscribe((msg) => {

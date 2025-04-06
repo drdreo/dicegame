@@ -11,6 +11,7 @@ import { GameService } from "../../shared/game.service";
 export class GameStatsComponent {
     private readonly gameService = inject(GameService);
 
+    currentPlayer = this.gameService.currentPlayer;
     player = this.gameService.player;
     enemy = this.gameService.enemy;
 
