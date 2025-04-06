@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, viewChild } from "@angular/core";
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    computed,
+    effect,
+    ElementRef,
+    inject,
+    viewChild
+} from "@angular/core";
 import { DiceBox, DiceEventData, DiceResults } from "@drdreo/dice-box-threejs";
 import { GameService } from "../../shared/game.service";
 
@@ -14,7 +23,8 @@ type SelectedOverlay = {
     selector: "app-dice-board",
     imports: [],
     templateUrl: "./dice-board.component.html",
-    styleUrl: "./dice-board.component.scss"
+    styleUrl: "./dice-board.component.scss",
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DiceBoardComponent implements AfterViewInit {
     private readonly gameService = inject(GameService);

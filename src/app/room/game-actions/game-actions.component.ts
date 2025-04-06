@@ -15,5 +15,11 @@ export class GameActionsComponent {
         this.gameService.rollDice();
     }
 
-    setAside() {}
+    setAside() {
+        this.gameService.setDiceAside([]);
+    }
+
+    endTurn() {
+        this.gameService.endTurn();
+    }
 }
