@@ -59,6 +59,15 @@ export class GameService {
         { equal: areDiceEqual }
     );
 
+    setAsideDice = computed(
+        () => {
+            const state = this.gameState();
+            if (!state) return [];
+            return state.setAside;
+        },
+        { equal: areDiceEqual }
+    );
+
     joined$ = new Subject<JoinRoomSuccessData>();
     playerId = toSignal(this.joined$.pipe(map((data) => data.clientId)));
     player = computed(() => {
