@@ -152,7 +152,7 @@ export type SelectDiceAction = {
 export type SetDiceAsideAction = {
     type: "set_aside";
     data: {
-        diceIndex: number[];
+        endTurn: boolean;
     };
 };
 

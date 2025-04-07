@@ -14,6 +14,7 @@ import {
     WebSocketErrorEvent,
     WebSocketSuccessEvent
 } from "./types";
+import { NotificationService } from "./notification.service";
 
 function areDiceEqual(prev: number[], curr: number[]): boolean {
     if (!prev || !curr) return prev === curr;
@@ -27,6 +28,7 @@ function areDiceEqual(prev: number[], curr: number[]): boolean {
 export class GameService {
     private readonly router = inject(Router);
     private readonly socketService = inject(SocketService);
+    private readonly notificationService = inject(NotificationService);
 
     gameState = toSignal(
         this.socketService.messages$.pipe(
@@ -141,11 +143,11 @@ export class GameService {
         this.socketService.sendMessage(action);
     }
 
-    setDiceAside(diceIndex: number[]) {
+    setDiceAside(endTurn: boolean) {
         const action: SetDiceAsideAction = {
             type: "set_aside",
             data: {
-                diceIndex
+                endTurn
             }
         };
         this.socketService.sendMessage(action);
@@ -161,6 +163,9 @@ export class GameService {
     private handleErrorMessage(message: WebSocketErrorEvent) {
         console.error("Game error:", message.error);
         switch (message.type) {
+            case "error":
+                this.notificationService.notify(message.error);
+                break;
             case "reconnect_result":
                 this.socketService.clientId = undefined;
                 this.socketService.roomId = undefined;

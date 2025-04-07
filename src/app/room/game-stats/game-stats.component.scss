@@ -17,6 +17,10 @@ table {
         font-weight: bold;
     }
 
+    tbody {
+        text-shadow: 4px 7px 2px #000;
+    }
+
     th {
         padding: 8px 16px;
     }
@@ -44,7 +48,7 @@ table {
 
     &::before {
         position: absolute;
-        top: -50%;
+        top: -15%;
         left: 50%;
         transform: translate(-50%, -50%);
         color: red;

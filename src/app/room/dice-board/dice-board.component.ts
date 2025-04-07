@@ -51,9 +51,13 @@ export class DiceBoardComponent implements AfterViewInit {
     constructor() {
         effect(() => {
             const dice = this.currentDice();
-            if (dice && dice.length > 0) {
+
+            const isValidDice = (die: number) => die >= 1 && die <= 6;
+            if (dice && dice.length > 0 && dice.every(isValidDice)) {
                 console.log("Current dice: ", dice);
                 this.visualizeDiceRoll(dice);
+            } else {
+                this.box?.clearDice();;
             }
         });
     }
@@ -133,10 +137,6 @@ export class DiceBoardComponent implements AfterViewInit {
 
         try {
             await this.box.initialize();
-            // Initial roll after initialization
-            setTimeout(() => {
-                this.visualizeDiceRoll([1, 2, 3]);
-            }, 1000);
         } catch (e) {
             console.error(e);
         }
