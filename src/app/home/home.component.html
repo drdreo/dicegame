@@ -14,12 +14,26 @@
                 <label for="roomId">Room</label>
                 <div class="room-group">
                     <input formControlName="roomId" id="roomId" placeholder="Enter room or leave empty" type="text" />
-                    <button (click)="generateRoomCode()" class="generate-btn" type="button">Generate</button>
+                    <button
+                        (click)="generateRoomCode()"
+                        class="generate-btn"
+                        title="Generate a room code"
+                        type="button"
+                    >
+                        Generate
+                    </button>
                 </div>
             </div>
 
             <div class="action-buttons">
-                <button [disabled]="lobbyForm.invalid" class="join-btn" type="submit">Create/Join Room</button>
+                <button
+                    [disabled]="lobbyForm.invalid || !isConnected()"
+                    [title]="!isConnected() ? 'Server is offline. Try again later.' : ''"
+                    class="join-btn"
+                    type="submit"
+                >
+                    Create / Join Room
+                </button>
             </div>
         </form>
 

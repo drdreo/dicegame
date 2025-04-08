@@ -57,7 +57,7 @@ export class DiceBoardComponent implements AfterViewInit {
                 console.log("Current dice: ", dice);
                 this.visualizeDiceRoll(dice);
             } else {
-                this.box?.clearDice();;
+                this.box?.clearDice();
             }
         });
     }
@@ -85,6 +85,7 @@ export class DiceBoardComponent implements AfterViewInit {
         // });
 
         this.box?.roll(notation);
+        this.gameService.isRolling.set(true);
     }
 
     private async initializeDiceBox() {
@@ -108,6 +109,7 @@ export class DiceBoardComponent implements AfterViewInit {
             enableDiceSelection: true,
             onRollComplete: (results: DiceResults) => {
                 console.log(`onRollComplete: `, results);
+                this.gameService.isRolling.set(false);
             },
             onDiceClick: (diceInfo: DiceEventData) => {
                 console.log(`onDiceClick: `, diceInfo);

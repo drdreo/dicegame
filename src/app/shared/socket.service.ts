@@ -1,4 +1,5 @@
 import { inject, Injectable } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { BehaviorSubject, filter, map, Subject } from "rxjs";
 import { ReconnectAction, WebSocketActions, WebSocketMessage } from "./types";
 import { Router } from "@angular/router";
@@ -9,7 +10,7 @@ import { Router } from "@angular/router";
 export class SocketService {
     private socket: WebSocket | null = null;
     private _connectionStatus$ = new BehaviorSubject<number>(WebSocket.CLOSED);
-    readonly connectionStatus$ = this._connectionStatus$.asObservable();
+    readonly connectionStatus = toSignal(this._connectionStatus$);
     private _messages$ = new Subject<WebSocketMessage>();
     readonly messages$ = this._messages$.asObservable();
 

@@ -1,4 +1,4 @@
-import { computed, inject, Injectable } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { filter, map, Subject } from "rxjs";
@@ -89,6 +89,7 @@ export class GameService {
         if (!state) return undefined;
         return state.players[state.currentTurn];
     });
+    isRolling = signal(false);
 
     constructor() {
         this.socketService.messages$.subscribe((msg) => {

@@ -1,10 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, Component, OnInit, signal } from "@angular/core";
 
 @Component({
     selector: "app-music-playlist",
     imports: [CommonModule],
-    templateUrl: "./music-playlist.component.html",
+    template: `
+        <div class="music-controls">
+            <button (click)="togglePlayback()" class="music-toggle">
+                {{ isPlaying() ? "Pause Music" : "Play Music" }}
+            </button>
+        </div>
+    `,
     styleUrl: "./music-playlist.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -49,8 +55,6 @@ export class MusicPlaylistComponent implements OnInit {
             this.audio.pause();
             this.isPlaying.set(false);
         } else {
-            console.log("Playback playback failed:", this.isPlaying());
-            ``;
             this.playMusic();
         }
         this.hasUserInteracted = true;

@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { GameService } from "../shared/game.service";
+import { SocketService } from "../shared/socket.service";
 
 @Component({
     selector: "app-home",
@@ -12,14 +13,16 @@ import { GameService } from "../shared/game.service";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent implements OnInit {
-    recentRooms = signal<string[]>([]);
+    private readonly socketService = inject(SocketService);
     private readonly gameService = inject(GameService);
     private readonly fb = inject(FormBuilder);
+    private readonly router = inject(Router);
+    recentRooms = signal<string[]>([]);
     lobbyForm = this.fb.group({
         playerName: ["", [Validators.required, Validators.minLength(2)]],
         roomId: [""]
     });
-    private readonly router = inject(Router);
+    isConnected = computed(() => this.socketService.connectionStatus() === WebSocket.OPEN);
 
     constructor() {
         this.gameService.joined$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
