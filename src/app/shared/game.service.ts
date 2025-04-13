@@ -91,6 +91,8 @@ export class GameService {
     });
     isRolling = signal(false);
 
+    // TODO: Fix the bug that isRolling doesnt reset when the dice roll is skipped too quickly.
+
     constructor() {
         this.socketService.messages$.subscribe((msg) => {
             if (

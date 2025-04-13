@@ -64,6 +64,11 @@ export class MusicPlaylistComponent implements OnInit {
     }
 
     playMusic() {
+        if (this.isPlaying()) {
+            console.log("Music is already playing.");
+            return;
+        }
+
         this.audio
             .play()
             .then(() => {

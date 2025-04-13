@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
 import { GameService } from "../../shared/game.service";
 import { HotkeyService } from "../../shared/hotkey.service";
 
@@ -9,7 +9,7 @@ import { HotkeyService } from "../../shared/hotkey.service";
     styleUrl: "./game-actions.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GameActionsComponent {
+export class GameActionsComponent implements OnDestroy {
     private readonly gameService = inject(GameService);
     private readonly hotkey = inject(HotkeyService);
 
@@ -28,6 +28,12 @@ export class GameActionsComponent {
             console.log("f pressed");
             this.setAsideAndEnd();
         });
+    }
+
+    ngOnDestroy() {
+        this.hotkey.removeShortcut("space");
+        this.hotkey.removeShortcut("s");
+        this.hotkey.removeShortcut("f");
     }
 
     rollDice() {
