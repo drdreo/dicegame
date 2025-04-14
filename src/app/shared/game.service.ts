@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from "@angular/core";
+import { computed, effect, inject, Injectable, linkedSignal, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { filter, map, Subject } from "rxjs";
@@ -84,14 +84,28 @@ export class GameService {
         if (!playerId || !gameState) return undefined;
         return Object.values(gameState.players).find((player) => player.id !== playerId);
     });
-    currentPlayer = computed(() => {
-        const state = this.gameState();
-        if (!state) return undefined;
-        return state.players[state.currentTurn];
-    });
+    currentPlayer = computed(
+        () => {
+            const state = this.gameState();
+            if (!state) return undefined;
+            return state.players[state.currentTurn];
+        },
+        { equal: (p1, p2) => p1?.id === p2?.id }
+    );
+
     isRolling = signal(false);
 
     // TODO: Fix the bug that isRolling doesnt reset when the dice roll is skipped too quickly.
+    // doesnt work
+    isRollingCopy = linkedSignal({
+        source: this.currentPlayer,
+        computation: (newPlayer, previous) => {
+            if (!previous || newPlayer?.id !== previous.source?.id) {
+                return false;
+            }
+            return previous.value;
+        }
+    });
 
     constructor() {
         this.socketService.messages$.subscribe((msg) => {
@@ -107,6 +121,12 @@ export class GameService {
             } else {
                 this.handleSuccessMessage(msg);
             }
+        });
+
+        effect(() => {
+            const currentPlayer = this.currentPlayer();
+            console.log("Current player:", currentPlayer);
+            this.isRolling.set(false);
         });
     }
 

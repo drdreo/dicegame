@@ -33,6 +33,8 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.loadRecentRooms();
+
+        this.initKofiWidget();
     }
 
     onSubmit() {
@@ -56,5 +58,20 @@ export class HomeComponent implements OnInit {
     private loadRecentRooms() {
         // Implement logic to load recent rooms from local storage or service
         this.recentRooms.set(["ABCD", "EFGH", "IJKL"]);
+    }
+
+    private initKofiWidget(): void {
+        // Check if kofiWidgetOverlay is available in the global window object
+        const kofiOverlay = (window as any).kofiWidgetOverlay;
+        if (typeof kofiOverlay !== "undefined") {
+            kofiOverlay.draw("drdreo", {
+                type: "floating-chat",
+                "floating-chat.donateButton.text": "Buy me a kofi",
+                "floating-chat.donateButton.background-color": "#fcbf47",
+                "floating-chat.donateButton.text-color": "#323842"
+            });
+        } else {
+            setTimeout(() => this.initKofiWidget(), 1000);
+        }
     }
 }

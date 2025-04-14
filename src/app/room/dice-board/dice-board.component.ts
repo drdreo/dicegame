@@ -66,10 +66,6 @@ export class DiceBoardComponent implements AfterViewInit {
         this.initializeDiceBox();
     }
 
-    rollDice() {
-        this.gameService.rollDice();
-    }
-
     visualizeDiceRoll(dice: number[]) {
         const notation = createNotationFromValues(dice);
 
