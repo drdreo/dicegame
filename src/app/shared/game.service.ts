@@ -2,6 +2,7 @@ import { computed, effect, inject, Injectable, linkedSignal, signal } from "@ang
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { filter, map, Subject } from "rxjs";
+import { NotificationService } from "./notification.service";
 import { SocketService } from "./socket.service";
 import {
     AddBotAction,
@@ -14,7 +15,6 @@ import {
     WebSocketErrorEvent,
     WebSocketSuccessEvent
 } from "./types";
-import { NotificationService } from "./notification.service";
 
 function areDiceEqual(prev: number[], curr: number[]): boolean {
     if (!prev || !curr) return prev === curr;
@@ -71,15 +71,16 @@ export class GameService {
     );
 
     joined$ = new Subject<JoinRoomSuccessData>();
-    playerId = toSignal(this.joined$.pipe(map((data) => data.clientId)));
+    reconnected$ = new Subject<JoinRoomSuccessData>();
+
     player = computed(() => {
-        const playerId = this.playerId();
+        const playerId = this.socketService.clientId;
         const gameState = this.gameState();
         if (!playerId || !gameState) return undefined;
         return gameState.players[playerId];
     });
     enemy = computed(() => {
-        const playerId = this.playerId();
+        const playerId = this.socketService.clientId;
         const gameState = this.gameState();
         if (!playerId || !gameState) return undefined;
         return Object.values(gameState.players).find((player) => player.id !== playerId);
@@ -92,6 +93,12 @@ export class GameService {
         },
         { equal: (p1, p2) => p1?.id === p2?.id }
     );
+    isYourTurn = computed(() => {
+        const currentPlayer = this.currentPlayer();
+        const player = this.player();
+        if (!currentPlayer || !player) return false;
+        return currentPlayer.id === player.id;
+    });
 
     isRolling = signal(false);
 
@@ -187,7 +194,7 @@ export class GameService {
         console.error("Game error:", message.error);
         switch (message.type) {
             case "error":
-                this.notificationService.notify(message.error);
+                this.notificationService.notify(message.error, { autoClose: 3500 });
                 break;
             case "reconnect_result":
                 this.socketService.clientId = undefined;
@@ -202,8 +209,12 @@ export class GameService {
     private handleSuccessMessage(event: WebSocketSuccessEvent): void {
         switch (event.type) {
             case "join_room_result":
+                this.handleJoinRoom(event.data);
+                this.joined$.next(event.data);
+                break;
             case "reconnect_result":
                 this.handleJoinRoom(event.data);
+                this.reconnected$.next(event.data);
                 break;
 
             case "game_state":
@@ -231,6 +242,5 @@ export class GameService {
 
         this.socketService.clientId = data.clientId;
         this.socketService.roomId = data.roomId;
-        this.joined$.next(data);
     }
 }

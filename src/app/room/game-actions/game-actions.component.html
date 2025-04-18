@@ -1,28 +1,16 @@
 <div class="game-actions">
-    <div (click)="rollDice()" class="game-actions-row">
-        <div class="game-actions-cell game-actions-text">
-            Roll
-        </div>
-        <div class="game-actions-cell hotkey">
-            Space
-        </div>
+    <div (click)="rollDice()" [class.disabled]="!isYourTurn()" class="game-actions-row">
+        <div class="game-actions-cell game-actions-text">Roll</div>
+        <div class="game-actions-cell hotkey">Space</div>
     </div>
 
-    <div (click)="setAsideAndContinue()" class="game-actions-row">
-        <div class="game-actions-cell game-actions-text">
-            Score & Continue
-        </div>
-        <div class="game-actions-cell hotkey">
-            S
-        </div>
+    <div (click)="setAsideAndContinue()" [class.disabled]="!hasSelectedDice()" class="game-actions-row">
+        <div class="game-actions-cell game-actions-text">Score & Continue</div>
+        <div class="game-actions-cell hotkey">S</div>
     </div>
 
-    <div (click)="setAsideAndEnd()" class="game-actions-row">
-        <div class="game-actions-cell game-actions-text">
-            Score & Pass
-        </div>
-        <div class="game-actions-cell hotkey">
-            F
-        </div>
+    <div (click)="setAsideAndEnd()" [class.disabled]="!hasSelectedDice()" class="game-actions-row">
+        <div class="game-actions-cell game-actions-text">Score & Pass</div>
+        <div class="game-actions-cell hotkey">F</div>
     </div>
 </div>

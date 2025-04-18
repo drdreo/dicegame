@@ -7,25 +7,47 @@ import { NotificationComponent } from "./notification.component";
 export class NotificationService {
     private readonly appRef = inject(ApplicationRef);
 
-    notify(message: string) {
+    notify(
+        message: string,
+        options?: {
+            actionText?: string;
+            onAction?: () => void;
+            autoClose?: number;
+        }
+    ) {
         const componentRef = createComponent(NotificationComponent, {
             environmentInjector: this.appRef.injector,
             hostElement: document.createElement("div")
         });
 
         componentRef.setInput("message", message);
-        const sub = componentRef.instance.onClose.subscribe(() => {
-            this.appRef.detachView(componentRef.hostView);
-            componentRef.destroy();
-            sub.unsubscribe();
+        if (options?.actionText) {
+            componentRef.setInput("actionText", options.actionText);
+        }
+
+        componentRef.instance.onClose.subscribe(() => {
+            this.destroyNotification(componentRef);
         });
+
+        if (options?.onAction) {
+            componentRef.instance.onAction.subscribe(() => {
+                options.onAction?.();
+                this.destroyNotification(componentRef);
+            });
+        }
 
         document.body.appendChild(componentRef.location.nativeElement);
         this.appRef.attachView(componentRef.hostView);
 
-        setTimeout(() => {
-            this.appRef.detachView(componentRef.hostView);
-            componentRef.destroy();
-        }, 3500); // Auto close after 3.5 seconds
+        if (options?.autoClose) {
+            setTimeout(() => {
+                this.destroyNotification(componentRef);
+            }, options.autoClose);
+        }
+    }
+
+    private destroyNotification(componentRef: any) {
+        this.appRef.detachView(componentRef.hostView);
+        componentRef.destroy();
     }
 }

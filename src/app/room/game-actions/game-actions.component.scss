@@ -18,6 +18,11 @@
         cursor: pointer;
         pointer-events: all;
 
+        &.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
         &:hover {
             color: var(--color-primary);
 

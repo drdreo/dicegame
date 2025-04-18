@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { GameService } from "../shared/game.service";
+import { NotificationService } from "../shared/notification.service";
 import { SocketService } from "../shared/socket.service";
 
 @Component({
@@ -15,6 +16,7 @@ import { SocketService } from "../shared/socket.service";
 export class HomeComponent implements OnInit {
     private readonly socketService = inject(SocketService);
     private readonly gameService = inject(GameService);
+    private readonly notificationService = inject(NotificationService);
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
     recentRooms = signal<string[]>([]);
@@ -27,7 +29,18 @@ export class HomeComponent implements OnInit {
     constructor() {
         this.gameService.joined$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
             console.log("Joined room:", roomId);
-            this.router.navigate(["/room", roomId]);
+            this.navigateToRoom(roomId);
+        });
+
+        this.gameService.reconnected$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
+            console.log("Reconnected to room:", roomId);
+            // show notification and offer to rejoin game
+            this.notificationService.notify(`Game still in progress. Rejoin '${roomId}'?`, {
+                actionText: "Rejoin Game",
+                onAction: () => {
+                    this.navigateToRoom(roomId);
+                }
+            });
         });
     }
 
@@ -53,6 +66,10 @@ export class HomeComponent implements OnInit {
     generateRoomCode() {
         const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
         this.lobbyForm.get("roomId")?.setValue(roomCode);
+    }
+
+    navigateToRoom(roomId: string) {
+        this.router.navigate(["/room", roomId]);
     }
 
     private loadRecentRooms() {

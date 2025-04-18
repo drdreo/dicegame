@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, computed } from "@angular/core";
 import { GameService } from "../../shared/game.service";
 import { HotkeyService } from "../../shared/hotkey.service";
 
@@ -12,6 +12,9 @@ import { HotkeyService } from "../../shared/hotkey.service";
 export class GameActionsComponent implements OnDestroy {
     private readonly gameService = inject(GameService);
     private readonly hotkey = inject(HotkeyService);
+
+    hasSelectedDice = computed(() => this.gameService.selectedDice().length > 0);
+    isYourTurn = this.gameService.isYourTurn;
 
     constructor() {
         this.hotkey.addShortcut("space").subscribe(() => {
@@ -44,14 +47,14 @@ export class GameActionsComponent implements OnDestroy {
     }
 
     setAsideAndContinue() {
-        if (this.gameService.isRolling()) {
+        if (this.gameService.isRolling() || !this.hasSelectedDice()) {
             return;
         }
         this.gameService.setDiceAside(false);
     }
 
     setAsideAndEnd() {
-        if (this.gameService.isRolling()) {
+        if (this.gameService.isRolling() || !this.hasSelectedDice()) {
             return;
         }
         this.gameService.setDiceAside(true);
