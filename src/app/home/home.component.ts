@@ -2,13 +2,16 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } 
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { NgIcon, provideIcons } from "@ng-icons/core";
+import { lucideDot } from "@ng-icons/lucide";
 import { GameService } from "../shared/game.service";
 import { NotificationService } from "../shared/notification.service";
 import { SocketService } from "../shared/socket.service";
 
 @Component({
     selector: "app-home",
-    imports: [FormsModule, ReactiveFormsModule],
+    imports: [FormsModule, ReactiveFormsModule, NgIcon],
+    providers: [provideIcons({ lucideDot })],
     templateUrl: "./home.component.html",
     styleUrl: "./home.component.scss",
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -25,6 +28,8 @@ export class HomeComponent implements OnInit {
         roomId: [""]
     });
     isConnected = computed(() => this.socketService.connectionStatus() === WebSocket.OPEN);
+
+    roomList = this.gameService.roomList;
 
     constructor() {
         this.gameService.joined$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {

@@ -30,6 +30,13 @@ export class GameService {
     private readonly socketService = inject(SocketService);
     private readonly notificationService = inject(NotificationService);
 
+    roomList = toSignal(
+        this.socketService.messages$.pipe(
+            filter((msg) => msg.type === "room_list_update"),
+            map((msg) => msg.data)
+        )
+    );
+
     gameState = toSignal(
         this.socketService.messages$.pipe(
             filter((msg) => msg.type === "game_state"),

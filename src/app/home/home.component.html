@@ -39,14 +39,19 @@
 
         <div class="recent-rooms">
             <h3>Recent Rooms</h3>
-            <ul>
-                @for (room of recentRooms(); track room) {
+            @for (room of roomList(); track room.roomId) {
+                <ul>
                     <li>
-                        {{ room }}
-                        <button (click)="quickJoin(room)">Join</button>
+                        {{ room.roomId }}
+                        @if (room.started) {
+                            <ng-icon name="lucideDot" color="red" />
+                        }
+                        <button (click)="quickJoin(room.roomId)">Join</button>
                     </li>
-                }
-            </ul>
+                </ul>
+            } @empty {
+                <p>No rooms yet</p>
+            }
         </div>
     </div>
 </div>
