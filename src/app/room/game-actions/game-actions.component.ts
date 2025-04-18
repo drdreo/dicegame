@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, computed } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy } from "@angular/core";
 import { GameService } from "../../shared/game.service";
 import { HotkeyService } from "../../shared/hotkey.service";
+import { isValidDice } from "../game.utils";
 
 @Component({
     selector: "app-game-actions",
@@ -15,6 +16,13 @@ export class GameActionsComponent implements OnDestroy {
 
     hasSelectedDice = computed(() => this.gameService.selectedDice().length > 0);
     isYourTurn = this.gameService.isYourTurn;
+    isRolling = this.gameService.isRolling;
+
+    canRoll = computed(() => {
+        const dice = this.gameService.currentDice();
+        const initialDice = dice.every((d) => !isValidDice(d));
+        return this.isYourTurn() && !this.isRolling() && initialDice;
+    });
 
     constructor() {
         this.hotkey.addShortcut("space").subscribe(() => {
@@ -40,21 +48,21 @@ export class GameActionsComponent implements OnDestroy {
     }
 
     rollDice() {
-        if (this.gameService.isRolling()) {
+        if (!this.canRoll()) {
             return;
         }
         this.gameService.rollDice();
     }
 
     setAsideAndContinue() {
-        if (this.gameService.isRolling() || !this.hasSelectedDice()) {
+        if (this.gameService.isRolling() || !this.hasSelectedDice() || !this.gameService.isYourTurn()) {
             return;
         }
         this.gameService.setDiceAside(false);
     }
 
     setAsideAndEnd() {
-        if (this.gameService.isRolling() || !this.hasSelectedDice()) {
+        if (this.gameService.isRolling() || !this.hasSelectedDice() || !this.gameService.isYourTurn()) {
             return;
         }
         this.gameService.setDiceAside(true);

@@ -6,10 +6,12 @@ import {
     effect,
     ElementRef,
     inject,
+    signal,
     viewChild
 } from "@angular/core";
 import { DiceBox, DiceEventData, DiceResults } from "@drdreo/dice-box-threejs";
 import { GameService } from "../../shared/game.service";
+import { isValidDice } from "../game.utils";
 
 const DICE_SCALE = 75;
 
@@ -18,6 +20,7 @@ type SelectedOverlay = {
     y: number;
     size: number;
 };
+
 
 @Component({
     selector: "app-dice-board",
@@ -33,9 +36,10 @@ export class DiceBoardComponent implements AfterViewInit {
     private readonly selectedDice = this.gameService.selectedDice;
     private currentDice = this.gameService.currentDice;
     private box?: DiceBox;
-    private colors = ["#00ffcb", "#ff6600", "#1d66af", "#7028ed", "#c4c427", "#d81128"];
 
+    private reDrawOverlay = signal(false);
     selectedDiceOverlay = computed(() => {
+        const redraw = this.reDrawOverlay();
         const dice = this.selectedDice();
         const overlayDice: SelectedOverlay[] = [];
         for (const dieId of dice) {
@@ -47,12 +51,11 @@ export class DiceBoardComponent implements AfterViewInit {
 
         return overlayDice;
     });
+    private colors = ["#00ffcb", "#ff6600", "#1d66af", "#7028ed", "#c4c427", "#d81128"];
 
     constructor() {
         effect(() => {
             const dice = this.currentDice();
-
-            const isValidDice = (die: number) => die >= 1 && die <= 6;
             if (dice && dice.length > 0 && dice.every(isValidDice)) {
                 console.log("Current dice: ", dice);
                 this.visualizeDiceRoll(dice);
@@ -62,8 +65,13 @@ export class DiceBoardComponent implements AfterViewInit {
         });
     }
 
-    ngAfterViewInit() {
-        this.initializeDiceBox();
+    async ngAfterViewInit() {
+        await this.initializeDiceBox();
+        // check if we are joining an in progress game and visualize the dice and selected ones again
+        const dice = this.currentDice();
+        if (dice && dice.length > 0 && dice.every(isValidDice)) {
+            this.visualizeDiceRoll(dice);
+        }
     }
 
     visualizeDiceRoll(dice: number[]) {
@@ -106,6 +114,11 @@ export class DiceBoardComponent implements AfterViewInit {
             onRollComplete: (results: DiceResults) => {
                 console.log(`onRollComplete: `, results);
                 this.gameService.isRolling.set(false);
+
+                // if we already had selected (reconnected to game) re-draw overlay
+                if (this.selectedDice().length > 0) {
+                    this.reDrawOverlay.set(true);
+                }
             },
             onDiceClick: (diceInfo: DiceEventData) => {
                 console.log(`onDiceClick: `, diceInfo);
