@@ -7,6 +7,7 @@ import { SocketService } from "./socket.service";
 import {
     AddBotAction,
     EndTurnAction,
+    GetRoomListAction,
     JoinRoomAction,
     JoinRoomSuccessData,
     LeaveRoomAction,
@@ -161,6 +162,16 @@ export class GameService {
     leaveRoom(): void {
         const action: LeaveRoomAction = {
             type: "leave_room"
+        };
+        this.socketService.sendMessage(action);
+    }
+
+    requestRoomList() {
+        const action: GetRoomListAction = {
+            type: "get_room_list",
+            data: {
+                gameType: "dicegame"
+            }
         };
         this.socketService.sendMessage(action);
     }

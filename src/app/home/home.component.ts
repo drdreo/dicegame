@@ -32,7 +32,9 @@ export class HomeComponent implements OnInit {
     roomList = this.gameService.roomList;
 
     constructor() {
+        this.gameService.requestRoomList();
         this.gameService.leaveRoom();
+
         this.gameService.joined$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
             console.log("Joined room:", roomId);
             this.navigateToRoom(roomId);

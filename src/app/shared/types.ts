@@ -20,6 +20,7 @@ export type WebSocketActions =
     | JoinRoomAction
     | LeaveRoomAction
     | ReconnectAction
+    | GetRoomListAction
     | RollDiceAction
     | SelectDiceAction
     | SetDiceAsideAction
@@ -159,6 +160,13 @@ export type JoinRoomAction = {
 export type LeaveRoomAction = {
     type: "leave_room";
 };
+
+export type GetRoomListAction = {
+    type: "get_room_list";
+    data: {
+        gameType: "dicegame";
+    };
+}
 
 export type ReconnectAction = {
     type: "reconnect";
