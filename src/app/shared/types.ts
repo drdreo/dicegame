@@ -1,37 +1,43 @@
 export type WebSocketSuccessEvent =
-    | JoinedEvent
+    | RoomListUpdateSuccessEvent
     | CreateRoomSuccessEvent
     | JoinRoomSuccessEvent
-    | ReconnectedEvent
-    | GameStateEvent
-    | TmpScoreEvent;
+    | LeaveRoomSuccessEvent
+    | ReconnectSuccessEvent
+    | AddBotSuccessEvent
+    // game specific events
+    | GameStateEvent;
 
-export type WebSocketErrorEvent = ErrorEvent | CreateRoomFailureEvent | JoinRoomFailureEvent;
+export type WebSocketErrorEvent =
+    | ErrorEvent
+    | CreateRoomFailureEvent
+    | JoinRoomFailureEvent
+    | LeaveRoomFailureEvent
+    | ReconnectFailureEvent
+    | AddBotFailureEvent;
 export type WebSocketMessage = WebSocketSuccessEvent | WebSocketErrorEvent;
+export type WebSocketActions =
+    | JoinRoomAction
+    | LeaveRoomAction
+    | ReconnectAction
+    | GetRoomListAction
+    | RollDiceAction
+    | SelectDiceAction
+    | SetDiceAsideAction
+    | AddBotAction
+    | EndTurnAction;
 
 /**
  * Success events
  */
-
-export type JoinedData = {
-    roomId: string;
-    clientId: string;
-};
-
-export type JoinedEvent = {
-    type: "joined";
+export type RoomListUpdateSuccessEvent = {
+    type: "room_list_update";
     success: true;
-    data: JoinedData;
-};
-
-export type ReconnectedData = {
-    clientId: string;
-    roomId: string;
-};
-
-export type ReconnectedEvent = {
-    type: "reconnected";
-    data: ReconnectedData;
+    data: {
+        roomId: string;
+        playerCount: number;
+        started: boolean;
+    }[];
 };
 
 export type CreateRoomSuccessData = {
@@ -44,41 +50,49 @@ export type CreateRoomSuccessEvent = {
 };
 
 export type JoinRoomSuccessData = {
+    clientId: string;
     roomId: string;
 };
-
 export type JoinRoomSuccessEvent = {
     type: "join_room_result";
     success: true;
     data: JoinRoomSuccessData;
 };
 
+export type LeaveRoomSuccessEvent = {
+    type: "leave_room_result";
+    success: true;
+    data: null;
+};
+
+export type ReconnectSuccessData = {
+    clientId: string;
+    roomId: string;
+};
+export type ReconnectSuccessEvent = {
+    type: "reconnect_result";
+    success: true;
+    data: ReconnectSuccessData;
+};
+
+export type AddBotSuccessEvent = {
+    type: "add_bot_result";
+    success: true;
+};
+
+/**
+ * game-specific success events
+ */
 export type GameStateEvent = {
     type: "game_state";
     data: GameState;
 };
 
-export type TmpScoreData = {
-    score: number;
-};
-
-export type TmpScoreEvent = {
-    type: "temp_score";
-    success: true;
-    data: TmpScoreData;
-};
-
 /**
- * Failure events
+ * Error events
  */
 export type CreateRoomFailureEvent = {
     type: "create_room_result";
-    success: false;
-    error: string;
-};
-
-export type ErrorEvent = {
-    type: "error";
     success: false;
     error: string;
 };
@@ -89,30 +103,50 @@ export type JoinRoomFailureEvent = {
     error: string;
 };
 
-//*
-//
-export type Player = {
-    id: string;
-    score: number;
+export type LeaveRoomFailureEvent = {
+    type: "leave_room_result";
+    success: false;
+    error: string;
 };
 
-export type GameState = {
-    players: { [key: string]: Player };
-    currentTurn: string; // player id
-    winner: string;
-    dice: number[];
-    setAside: number[];
+export type ReconnectFailureEvent = {
+    type: "reconnect_result";
+    success: false;
+    error: string;
+};
+
+export type AddBotFailureEvent = {
+    type: "add_bot_result";
+    success: false;
+    error: string;
+};
+
+export type ErrorEvent = {
+    type: "error";
+    success: false;
+    error: string;
+};
+
+export type Player = {
+    id: string;
+    name: string;
+    score: number;
     turnScore: number;
     roundScore: number;
 };
 
-export type WebSocketActions =
-    | JoinRoomAction
-    | ReconnectAction
-    | RollAction
-    | SelectAction
-    | SetAsideAction
-    | EndTurnAction;
+export type GameState = {
+    players: { [key: string]: Player };
+    started: boolean;
+    currentTurn: string; // player id
+    winner: string;
+    dice: number[];
+    selectedDice: number[]; // indexes of the dice
+    setAside: number[];
+    targetScore: number;
+    turnScore: number; // maybe move to player
+    roundScore: number; // maybe move to player
+};
 
 export type JoinRoomAction = {
     type: "join_room";
@@ -123,6 +157,17 @@ export type JoinRoomAction = {
     };
 };
 
+export type LeaveRoomAction = {
+    type: "leave_room";
+};
+
+export type GetRoomListAction = {
+    type: "get_room_list";
+    data: {
+        gameType: "dicegame";
+    };
+}
+
 export type ReconnectAction = {
     type: "reconnect";
     data: {
@@ -131,24 +176,28 @@ export type ReconnectAction = {
     };
 };
 
-export type RollAction = {
+export type RollDiceAction = {
     type: "roll";
 };
 
-export type SelectAction = {
+export type SelectDiceAction = {
     type: "select";
     data: {
-        diceIndex: number[];
+        diceIndex: number;
     };
 };
 
-export type SetAsideAction = {
+export type SetDiceAsideAction = {
     type: "set_aside";
     data: {
-        diceIndex: number[];
+        endTurn: boolean;
     };
 };
 
 export type EndTurnAction = {
     type: "end_turn";
+};
+
+export type AddBotAction = {
+    type: "add_bot";
 };

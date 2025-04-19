@@ -1,6 +1,6 @@
 <div class="lobby-container">
     <div class="lobby-content">
-        <h1>Dice Roller Lobby </h1>
+        <h1>Dice Roller Lobby</h1>
         <form (ngSubmit)="onSubmit()" [formGroup]="lobbyForm">
             <div class="form-group">
                 <label for="playerName">Player Name*</label>
@@ -14,25 +14,44 @@
                 <label for="roomId">Room</label>
                 <div class="room-group">
                     <input formControlName="roomId" id="roomId" placeholder="Enter room or leave empty" type="text" />
-                    <button (click)="generateRoomCode()" class="generate-btn" type="button">Generate</button>
+                    <button
+                        (click)="generateRoomCode()"
+                        class="generate-btn"
+                        title="Generate a room code"
+                        type="button"
+                    >
+                        Generate
+                    </button>
                 </div>
             </div>
 
             <div class="action-buttons">
-                <button [disabled]="lobbyForm.invalid" class="join-btn" type="submit">Create/Join Room</button>
+                <button
+                    [disabled]="lobbyForm.invalid || !isConnected()"
+                    [title]="!isConnected() ? 'Server is offline. Try again later.' : ''"
+                    class="join-btn"
+                    type="submit"
+                >
+                    Create / Join Room
+                </button>
             </div>
         </form>
 
         <div class="recent-rooms">
             <h3>Recent Rooms</h3>
-            <ul>
-                @for (room of recentRooms(); track room) {
+            @for (room of roomList(); track room.roomId) {
+                <ul>
                     <li>
-                        {{ room }}
-                        <button (click)="quickJoin(room)">Join</button>
+                        {{ room.roomId }}
+                        @if (room.started) {
+                            <ng-icon name="lucideDot" color="red" />
+                        }
+                        <button (click)="quickJoin(room.roomId)">Join</button>
                     </li>
-                }
-            </ul>
+                </ul>
+            } @empty {
+                <p>No rooms yet</p>
+            }
         </div>
     </div>
 </div>

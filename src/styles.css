@@ -1,9 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap");
 
 @font-face {
     font-family: Maximillian;
     src: url("../public/fonts/Maximilian.ttf") format("truetype");
+}
+
+:root {
+    --color-primary: #cca553;
+    --font-family: MedievalSharp, sans-serif;
+    --border-radius: 6px;
 }
 
 html,
@@ -11,10 +17,5 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-:root {
-    --color-primary: #cca553;
-    --font-family: MedievalSharp, sans-serif;
-    --border-radius: 6px;
+    font-family: var(--font-family);
 }

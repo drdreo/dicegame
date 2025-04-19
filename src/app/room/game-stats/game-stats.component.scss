@@ -1,0 +1,57 @@
+@use "sass:color";
+
+$stats-color: #bdb47b;
+
+:host {
+    border: 1px solid white;
+    position: relative;
+}
+
+table {
+    font-size: 24px;
+    border-collapse: collapse;
+
+    thead,
+    .total__goal {
+        color: $stats-color;
+        font-weight: bold;
+    }
+
+    tbody {
+        text-shadow: 4px 7px 2px #000;
+    }
+
+    th {
+        padding: 8px 16px;
+    }
+
+    td {
+        text-align: center;
+        padding: 8px 16px;
+    }
+
+    thead th:first-of-type,
+    tbody td:first-of-type {
+        text-align: right;
+        border-right: 1px solid color.adjust($stats-color, $whiteness: 10%);
+    }
+
+    thead th:last-of-type,
+    tbody td:last-of-type {
+        text-align: left;
+        border-left: 1px solid color.adjust($stats-color, $whiteness: 10%);
+    }
+}
+
+.current-player-indicator {
+    position: relative;
+
+    &::before {
+        position: absolute;
+        top: -15%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: red;
+        content: "v";
+    }
+}

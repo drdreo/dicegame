@@ -1,0 +1,33 @@
+@let e = enemy();
+@let y = player();
+@let current = currentPlayer();
+@if (!y || !e) {
+    <p>Loading...</p>
+} @else {
+    <table>
+        <thead>
+        <tr>
+            <th [class.current-player-indicator]="current?.id === y.id">You</th>
+            <th>Goal</th>
+            <th [class.current-player-indicator]="current?.id === e.id">{{ e.name }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="total">
+            <td class="total__you">{{ y.score }}</td>
+            <td class="total__goal">{{ goal() }}</td>
+            <td class="total__opponent">{{ e.score }}</td>
+        </tr>
+        <tr class="round">
+            <td class="round__you">{{ y?.roundScore }}</td>
+            <td>Round</td>
+            <td class="round__opponent">{{ e.roundScore }}</td>
+        </tr>
+        <tr class="selected">
+            <td class="selected__you">{{ y.turnScore }}</td>
+            <td>Selected</td>
+            <td class="selected__opponent">{{ e.turnScore }}</td>
+        </tr>
+        </tbody>
+    </table>
+}

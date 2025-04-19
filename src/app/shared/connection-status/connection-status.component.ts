@@ -1,30 +1,28 @@
-import { AsyncPipe } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { provideIcons, NgIcon } from "@ng-icons/core";
-import { lucideSignal, lucideUnplug, lucideRadioTower, lucideCircleHelp } from "@ng-icons/lucide";
-import { map } from "rxjs";
+import { ChangeDetectionStrategy, Component, computed, inject } from "@angular/core";
+import { NgIcon, provideIcons } from "@ng-icons/core";
+import { lucideCircleHelp, lucideRadioTower, lucideSignal, lucideUnplug } from "@ng-icons/lucide";
 import { SocketService } from "../socket.service";
 
 @Component({
     selector: "connection-status",
     // careful to keep NgIcons
-    imports: [AsyncPipe, NgIcon],
+    imports: [NgIcon],
     providers: [provideIcons({ lucideCircleHelp, lucideRadioTower, lucideSignal, lucideUnplug })],
-    template: ` @switch (connectionStatus$ | async) {
+    template: ` @switch (connectionStatus()) {
         @case ("Connected") {
-            <ng-icon name="lucideSignal" />
+            <ng-icon name="lucideSignal" color="white" title="Connected" />
         }
         @case ("Connecting") {
-            <ng-icon name="lucideRadioTower" />
+            <ng-icon name="lucideRadioTower" title="Connecting" />
         }
         @case ("Disconnecting") {
-            <ng-icon name="lucideUnplug" />
+            <ng-icon name="lucideUnplug" title="Disconnecting" />
         }
         @case ("Disconnected") {
-            <ng-icon name="lucideUnplug" />
+            <ng-icon name="lucideUnplug" color="red" title="Disconnected" />
         }
         @default {
-            <ng-icon name="lucideCircleHelp" />
+            <ng-icon name="lucideCircleHelp" title="Unknown status" />
         }
     }`,
     styles: `
@@ -34,25 +32,24 @@ import { SocketService } from "../socket.service";
             right: 5px;
         }
     `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectionStatusComponent {
     private readonly socketService = inject(SocketService);
 
-    connectionStatus$ = this.socketService.connectionStatus$.pipe(
-        map((status) => {
-            switch (status) {
-                case WebSocket.OPEN:
-                    return "Connected";
-                case WebSocket.CONNECTING:
-                    return "Connecting";
-                case WebSocket.CLOSING:
-                    return "Disconnecting";
-                case WebSocket.CLOSED:
-                    return "Disconnected";
-                default:
-                    return "Unknown status";
-            }
-        }),
-    );
+    connectionStatus = computed(() => {
+        const status = this.socketService.connectionStatus();
+        switch (status) {
+            case WebSocket.OPEN:
+                return "Connected";
+            case WebSocket.CONNECTING:
+                return "Connecting";
+            case WebSocket.CLOSING:
+                return "Disconnecting";
+            case WebSocket.CLOSED:
+                return "Disconnected";
+            default:
+                return "Unknown status";
+        }
+    });
 }

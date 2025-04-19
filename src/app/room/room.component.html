@@ -1,1 +1,12 @@
-<p>game works!</p>
+<div class="game-container">
+    <app-dice-aside class="game-aside-dice" />
+    <app-dice-board />
+
+    <app-music-playlist />
+    <app-game-stats class="game-stats" />
+    <app-game-actions class="game-actions" />
+
+    @if (!started()) {
+        <app-waiting-room />
+    }
+</div>

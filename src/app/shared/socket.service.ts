@@ -1,14 +1,16 @@
 import { Injectable } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
 import { BehaviorSubject, Subject } from "rxjs";
+import { environment } from "../../environments/environment";
 import { ReconnectAction, WebSocketActions, WebSocketMessage } from "./types";
 
 @Injectable({
-    providedIn: "root",
+    providedIn: "root"
 })
 export class SocketService {
     private socket: WebSocket | null = null;
     private _connectionStatus$ = new BehaviorSubject<number>(WebSocket.CLOSED);
-    readonly connectionStatus$ = this._connectionStatus$.asObservable();
+    readonly connectionStatus = toSignal(this._connectionStatus$);
     private _messages$ = new Subject<WebSocketMessage>();
     readonly messages$ = this._messages$.asObservable();
 
@@ -23,9 +25,14 @@ export class SocketService {
         return storedId ?? this._clientId;
     }
 
-    set clientId(id: string) {
+    set clientId(id: string | undefined) {
+        if (id) {
+            sessionStorage.setItem("clientId", id);
+        } else {
+            sessionStorage.removeItem("clientId");
+        }
+
         this._clientId = id;
-        sessionStorage.setItem("clientId", this._clientId);
     }
 
     private _roomId: string | undefined = undefined;
@@ -35,9 +42,13 @@ export class SocketService {
         return storedId ?? this._roomId;
     }
 
-    set roomId(id: string) {
+    set roomId(id: string | undefined) {
+        if (id) {
+            sessionStorage.setItem("roomId", id);
+        } else {
+            sessionStorage.removeItem("roomId");
+        }
         this._roomId = id;
-        sessionStorage.setItem("roomId", this._roomId);
     }
 
     sendMessage(message: WebSocketActions): void {
@@ -57,8 +68,8 @@ export class SocketService {
                 type: "reconnect",
                 data: {
                     roomId,
-                    clientId,
-                },
+                    clientId
+                }
             };
 
             this.sendMessage(message);
@@ -70,9 +81,8 @@ export class SocketService {
     }
 
     private connectWebSocket = () => {
-        const serverUrl = "localhost:6969";
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        const wsUrl = `${protocol}//${serverUrl}/ws`;
+        const wsUrl = `${protocol}//${environment.gameServerUrl}/ws?game=dicegame`;
 
         console.log("Connecting to WebSocket server at:", wsUrl);
         this.socket = new WebSocket(wsUrl);

@@ -1,0 +1,25 @@
+.game-container {
+    height: 100vh;
+    // Photo by <a href="https://unsplash.com/@jjbart7?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Joshua Bartell</a> on <a href="https://unsplash.com/photos/brown-wooden-board-6vvIBTvL90A?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
+    background: url("/images/game_board_1.jpg") no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+}
+
+.game-stats {
+    position: absolute;
+    bottom: 10%;
+    left: 10%;
+}
+
+.game-actions {
+    position: absolute;
+    top: 10%;
+    right: 0;
+}
+
+.game-aside-dice {
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+}

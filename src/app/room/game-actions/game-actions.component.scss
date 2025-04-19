@@ -1,0 +1,52 @@
+:host {
+    border: 1px solid white;
+    position: relative;
+    padding: 1rem;
+    pointer-events: none;
+}
+
+.game-actions {
+    display: table;
+    width: 100%;
+    border-spacing: 0.5rem;
+    font-size: 18px;
+    font-family: inherit;
+    color: white;
+
+    &-row {
+        display: table-row;
+        cursor: pointer;
+        pointer-events: all;
+
+        &.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        &:hover {
+            color: var(--color-primary);
+
+            .hotkey {
+                background-color: #222;
+            }
+        }
+    }
+
+    &-cell {
+        display: table-cell;
+        padding: 0.5rem;
+        vertical-align: middle;
+    }
+
+    &-text {
+        text-align: right;
+    }
+
+    .hotkey {
+        background: #333;
+        border: 1px solid #555;
+        border-radius: 4px;
+        padding: 0.2rem 0.5rem;
+        text-align: center;
+    }
+}
