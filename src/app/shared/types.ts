@@ -2,6 +2,7 @@ export type WebSocketSuccessEvent =
     | RoomListUpdateSuccessEvent
     | CreateRoomSuccessEvent
     | JoinRoomSuccessEvent
+    | LeaveRoomSuccessEvent
     | ReconnectSuccessEvent
     | AddBotSuccessEvent
     // game specific events
@@ -11,11 +12,13 @@ export type WebSocketErrorEvent =
     | ErrorEvent
     | CreateRoomFailureEvent
     | JoinRoomFailureEvent
+    | LeaveRoomFailureEvent
     | ReconnectFailureEvent
     | AddBotFailureEvent;
 export type WebSocketMessage = WebSocketSuccessEvent | WebSocketErrorEvent;
 export type WebSocketActions =
     | JoinRoomAction
+    | LeaveRoomAction
     | ReconnectAction
     | RollDiceAction
     | SelectDiceAction
@@ -27,14 +30,14 @@ export type WebSocketActions =
  * Success events
  */
 export type RoomListUpdateSuccessEvent = {
-    type: "room_list_update",
+    type: "room_list_update";
     success: true;
     data: {
         roomId: string;
         playerCount: number;
         started: boolean;
     }[];
-}
+};
 
 export type CreateRoomSuccessData = {
     roomId: string;
@@ -53,6 +56,12 @@ export type JoinRoomSuccessEvent = {
     type: "join_room_result";
     success: true;
     data: JoinRoomSuccessData;
+};
+
+export type LeaveRoomSuccessEvent = {
+    type: "leave_room_result";
+    success: true;
+    data: null;
 };
 
 export type ReconnectSuccessData = {
@@ -89,6 +98,12 @@ export type CreateRoomFailureEvent = {
 
 export type JoinRoomFailureEvent = {
     type: "join_room_result";
+    success: false;
+    error: string;
+};
+
+export type LeaveRoomFailureEvent = {
+    type: "leave_room_result";
     success: false;
     error: string;
 };
@@ -139,6 +154,10 @@ export type JoinRoomAction = {
         roomId: string | undefined;
         gameType: "dicegame";
     };
+};
+
+export type LeaveRoomAction = {
+    type: "leave_room";
 };
 
 export type ReconnectAction = {

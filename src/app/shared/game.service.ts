@@ -9,6 +9,7 @@ import {
     EndTurnAction,
     JoinRoomAction,
     JoinRoomSuccessData,
+    LeaveRoomAction,
     RollDiceAction,
     SelectDiceAction,
     SetDiceAsideAction,
@@ -127,6 +128,7 @@ export class GameService {
                 (msg.type === "error" ||
                     msg.type === "create_room_result" ||
                     msg.type === "join_room_result" ||
+                    msg.type === "leave_room_result" ||
                     msg.type === "add_bot_result" ||
                     msg.type === "reconnect_result") &&
                 !msg.success
@@ -152,6 +154,13 @@ export class GameService {
                 playerName,
                 gameType: "dicegame"
             }
+        };
+        this.socketService.sendMessage(action);
+    }
+
+    leaveRoom(): void {
+        const action: LeaveRoomAction = {
+            type: "leave_room"
         };
         this.socketService.sendMessage(action);
     }

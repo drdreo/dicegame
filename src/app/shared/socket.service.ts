@@ -1,8 +1,8 @@
-import { inject, Injectable } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { BehaviorSubject, filter, map, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from "rxjs";
+import { environment } from "../../environments/environment";
 import { ReconnectAction, WebSocketActions, WebSocketMessage } from "./types";
-import { Router } from "@angular/router";
 
 @Injectable({
     providedIn: "root"
@@ -81,10 +81,8 @@ export class SocketService {
     }
 
     private connectWebSocket = () => {
-        // TODO env
-        const serverUrl = "localhost:6969";
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        const wsUrl = `${protocol}//${serverUrl}/ws`;
+        const wsUrl = `${protocol}//${environment.gameServerUrl}/ws?game=dicegame`;
 
         console.log("Connecting to WebSocket server at:", wsUrl);
         this.socket = new WebSocket(wsUrl);
