@@ -22,7 +22,6 @@ export class HomeComponent implements OnInit {
     private readonly notificationService = inject(NotificationService);
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
-    recentRooms = signal<string[]>([]);
     lobbyForm = this.fb.group({
         playerName: ["", [Validators.required, Validators.minLength(2)]],
         roomId: [""]
@@ -53,8 +52,6 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.loadRecentRooms();
-
         this.initKofiWidget();
     }
 
@@ -78,11 +75,6 @@ export class HomeComponent implements OnInit {
 
     navigateToRoom(roomId: string) {
         this.router.navigate(["/room", roomId]);
-    }
-
-    private loadRecentRooms() {
-        // Implement logic to load recent rooms from local storage or service
-        this.recentRooms.set(["ABCD", "EFGH", "IJKL"]);
     }
 
     private initKofiWidget(): void {

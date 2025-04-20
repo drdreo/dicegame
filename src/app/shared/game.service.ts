@@ -34,7 +34,7 @@ export class GameService {
 
     roomList = toSignal(
         this.socketService.messages$.pipe(
-            filter((msg) => msg.type === "room_list_update"),
+            filter((msg) => msg.type === "get_room_list_result"),
             map((msg) => msg.data)
         )
     );
