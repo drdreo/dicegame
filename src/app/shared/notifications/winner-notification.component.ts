@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { Router } from "@angular/router";
 import { animate, query, style, transition, trigger } from "@angular/animations";
+import { NgIcon, provideIcons } from "@ng-icons/core";
+import { lucideLogOut } from "@ng-icons/lucide";
 
 @Component({
     selector: "app-winner-notification",
+    imports: [NgIcon],
+    providers: [provideIcons({ lucideLogOut })],
     template: `
         <div class="overlay">
             <div class="banner-container" [@bannerSequence]>
@@ -11,7 +15,10 @@ import { animate, query, style, transition, trigger } from "@angular/animations"
                     <div class="banner-background"></div>
                     <div class="banner-content">{{ winner() }} won</div>
                 </div>
-                <button class="leave-button" (click)="leave()">Leave</button>
+                <button class="leave-button" (click)="leave()">
+                    Leave
+                    <ng-icon name="lucideLogOut" />
+                </button>
             </div>
         </div>
     `,
@@ -72,7 +79,12 @@ import { animate, query, style, transition, trigger } from "@angular/animations"
             }
 
             .leave-button {
+                display: inline-flex;
+                gap: 10px;
+                justify-content: center;
+                align-items: center;
                 padding: 12px 24px;
+
                 background-color: #e74c3c;
                 color: white;
                 border: none;
@@ -112,7 +124,6 @@ import { animate, query, style, transition, trigger } from "@angular/animations"
             ])
         ])
     ],
-
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WinnerNotificationComponent {

@@ -87,7 +87,7 @@ export class MusicService {
     }
 
     private setupAudio() {
-        console.log("Setting up audio");
+        console.debug("Setting up audio");
         this.audio.src = this.playlist[this.currentTrackIndex];
         this.setVolume(0.03);
         this.audio.load();

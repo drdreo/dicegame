@@ -12,6 +12,7 @@ import {
 import { DiceBox, DiceEventData, DiceResults } from "@drdreo/dice-box-threejs";
 import { GameService } from "../../shared/game.service";
 import { isValidDice } from "../game.utils";
+import { DeviceService } from "../../shared/device.service";
 
 const DICE_SCALE = 75;
 
@@ -29,6 +30,7 @@ type SelectedOverlay = {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DiceBoardComponent implements AfterViewInit {
+    private readonly deviceService = inject(DeviceService);
     private readonly gameService = inject(GameService);
     private readonly diceContainer = viewChild<ElementRef>("diceContainer");
     private readonly hoverOverlay = viewChild<ElementRef>("hoverOverlay");
@@ -78,7 +80,7 @@ export class DiceBoardComponent implements AfterViewInit {
                 return;
             }
             if (dice && dice.length > 0 && dice.every(isValidDice)) {
-                console.log("Current dice: ", dice);
+                console.debug("Current dice: ", dice);
                 this.visualizeDiceRoll(dice);
             } else {
                 box.clearDice();
@@ -130,7 +132,6 @@ export class DiceBoardComponent implements AfterViewInit {
         const box = new DiceBox(viewContainer, {
             ...this.diceBoxConfig,
             onRollComplete: (results: DiceResults) => {
-                console.log(`onRollComplete: `, results);
                 this.gameService.isRolling.set(false);
 
                 // if we already had selected (reconnected to game) re-draw overlay
@@ -139,11 +140,12 @@ export class DiceBoardComponent implements AfterViewInit {
                 }
             },
             onDiceClick: (diceInfo: DiceEventData) => {
-                console.log(`onDiceClick: `, diceInfo);
                 this.gameService.selectDice(diceInfo.id);
             },
             onDiceHover: (diceInfo: DiceEventData | null) => {
-                console.log(`onDiceHover: `, diceInfo);
+                if (this.deviceService.isTouchDevice) {
+                    return;
+                }
 
                 const overlay = this.hoverOverlay()!.nativeElement;
 

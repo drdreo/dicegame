@@ -3,8 +3,8 @@
 $stats-color: #bdb47b;
 
 :host {
-    border: 1px solid white;
     position: relative;
+    pointer-events: none;
 }
 
 table {

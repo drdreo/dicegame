@@ -84,27 +84,26 @@ export class SocketService {
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         const wsUrl = `${protocol}//${environment.gameServerUrl}/ws?game=dicegame`;
 
-        console.log("Connecting to WebSocket server at:", wsUrl);
+        console.debug("Connecting to WebSocket server at:", wsUrl);
         this.socket = new WebSocket(wsUrl);
 
         this.socket.onopen = () => {
-            console.log("WebSocket connection established");
+            console.debug("WebSocket connection established");
             this._connectionStatus$.next(WebSocket.OPEN);
             this.checkReconnect();
         };
 
         this.socket.onclose = () => {
-            console.log("WebSocket connection closed");
+            console.debug("WebSocket connection closed");
             this._connectionStatus$.next(WebSocket.CLOSED);
             setTimeout(this.connectWebSocket, 3000);
         };
 
         this.socket.onerror = (error: Event) => {
-            console.error("WebSocket Error:", error);
+            console.error("WebSocket Error: ", error);
         };
 
         this.socket.onmessage = (event: MessageEvent<string>) => {
-            console.log("Raw message received:", event.data);
             const messages = JSON.parse(event.data) as WebSocketMessage[];
             for (const msg of messages) {
                 this._messages$.next(msg);

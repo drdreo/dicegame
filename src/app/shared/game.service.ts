@@ -151,7 +151,7 @@ export class GameService {
 
         effect(() => {
             const currentPlayer = this.currentPlayer();
-            console.log("Current player:", currentPlayer);
+            console.debug("Current player:", currentPlayer?.name);
             this.isRolling.set(false);
         });
     }
@@ -256,7 +256,7 @@ export class GameService {
             case "game_state":
                 break;
             default:
-                console.log("Unknown room event type:", event.type);
+                console.debug("Unknown room event type:", event.type);
         }
     }
 

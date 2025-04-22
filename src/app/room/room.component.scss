@@ -1,5 +1,6 @@
 .game-container {
     height: 100vh;
+    overflow: hidden;
     // Photo by <a href="https://unsplash.com/@jjbart7?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Joshua Bartell</a> on <a href="https://unsplash.com/photos/brown-wooden-board-6vvIBTvL90A?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
     background: url("/images/game_board_1.jpg") no-repeat center center fixed;
     background-size: cover;
