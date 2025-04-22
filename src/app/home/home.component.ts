@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
     private readonly notificationService = inject(NotificationService);
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
+
     lobbyForm = this.fb.group({
         playerName: ["", [Validators.required, Validators.minLength(2)]],
         roomId: [""]
@@ -78,15 +79,18 @@ export class HomeComponent implements OnInit {
     }
 
     private initKofiWidget(): void {
-        // Check if kofiWidgetOverlay is available in the global window object
         const kofiOverlay = (window as any).kofiWidgetOverlay;
         if (typeof kofiOverlay !== "undefined") {
-            kofiOverlay.draw("drdreo", {
-                type: "floating-chat",
-                "floating-chat.donateButton.text": "Buy me a kofi",
-                "floating-chat.donateButton.background-color": "#fcbf47",
-                "floating-chat.donateButton.text-color": "#323842"
-            });
+            kofiOverlay.draw(
+                "drdreo",
+                {
+                    type: "floating-chat",
+                    "floating-chat.donateButton.text": "Buy me a kofi",
+                    "floating-chat.donateButton.background-color": "#fcbf47",
+                    "floating-chat.donateButton.text-color": "#323842"
+                },
+                "kofi-container"
+            );
         } else {
             setTimeout(() => this.initKofiWidget(), 1000);
         }
