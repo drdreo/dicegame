@@ -21,7 +21,6 @@ type SelectedOverlay = {
     size: number;
 };
 
-
 @Component({
     selector: "app-dice-board",
     imports: [],
@@ -35,15 +34,17 @@ export class DiceBoardComponent implements AfterViewInit {
     private readonly hoverOverlay = viewChild<ElementRef>("hoverOverlay");
     private readonly selectedDice = this.gameService.selectedDice;
     private currentDice = this.gameService.currentDice;
-    private box?: DiceBox;
-
-    private reDrawOverlay = signal(false);
+    private diceBox = signal<DiceBox | undefined>(undefined);
     selectedDiceOverlay = computed(() => {
-        const redraw = this.reDrawOverlay();
+        const _redraw = this.reDrawOverlay();
         const dice = this.selectedDice();
         const overlayDice: SelectedOverlay[] = [];
+        const box = this.diceBox();
+        if (!box) {
+            return overlayDice;
+        }
         for (const dieId of dice) {
-            const diceInfo = this.box?.getDiceResults(dieId);
+            const diceInfo = box.getDiceResults(dieId);
             if (diceInfo) {
                 overlayDice.push({ ...diceInfo.screenPosition, size: diceInfo.scale * DICE_SCALE });
             }
@@ -51,16 +52,36 @@ export class DiceBoardComponent implements AfterViewInit {
 
         return overlayDice;
     });
+
+    private reDrawOverlay = signal(false);
+    private diceBoxConfig = {
+        theme_customColorset: {
+            background: "#d0b990",
+            foreground: "#ffffff",
+            texture: "wood",
+            material: "wood"
+        },
+        light_intensity: 1,
+        sounds: true,
+        gravity_multiplier: 300,
+        baseScale: 75, // dice size
+        strength: 0.5, // throw strength
+        enableDiceSelection: true
+    };
     private colors = ["#00ffcb", "#ff6600", "#1d66af", "#7028ed", "#c4c427", "#d81128"];
 
     constructor() {
         effect(() => {
             const dice = this.currentDice();
+            const box = this.diceBox();
+            if (!box) {
+                return;
+            }
             if (dice && dice.length > 0 && dice.every(isValidDice)) {
                 console.log("Current dice: ", dice);
                 this.visualizeDiceRoll(dice);
             } else {
-                this.box?.clearDice();
+                box.clearDice();
             }
         });
     }
@@ -74,7 +95,12 @@ export class DiceBoardComponent implements AfterViewInit {
         }
     }
 
-    visualizeDiceRoll(dice: number[]) {
+    async visualizeDiceRoll(dice: number[]) {
+        const box = this.diceBox();
+        if (!box) {
+            console.error("Dice box not initialized");
+            return;
+        }
         const notation = createNotationFromValues(dice);
 
         const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)];
@@ -88,8 +114,11 @@ export class DiceBoardComponent implements AfterViewInit {
         //     },
         // });
 
-        this.box?.roll(notation);
         this.gameService.isRolling.set(true);
+        box.roll(notation).catch((e) => {
+            this.gameService.isRolling.set(false);
+            console.error(e);
+        });
     }
 
     private async initializeDiceBox() {
@@ -98,19 +127,8 @@ export class DiceBoardComponent implements AfterViewInit {
             throw new Error("Cant init dice box without container");
         }
 
-        this.box = new DiceBox(viewContainer, {
-            theme_customColorset: {
-                background: "#d0b990",
-                foreground: "#ffffff",
-                texture: "wood",
-                material: "felt"
-            },
-            light_intensity: 1,
-            sounds: false, // broke dice rolls on reconnect rolls
-            gravity_multiplier: 300,
-            baseScale: 75, // dice size
-            strength: 0.5, // throw strength
-            enableDiceSelection: true,
+        const box = new DiceBox(viewContainer, {
+            ...this.diceBoxConfig,
             onRollComplete: (results: DiceResults) => {
                 console.log(`onRollComplete: `, results);
                 this.gameService.isRolling.set(false);
@@ -147,7 +165,8 @@ export class DiceBoardComponent implements AfterViewInit {
         });
 
         try {
-            await this.box.initialize();
+            await box.initialize();
+            this.diceBox.set(box);
         } catch (e) {
             console.error(e);
         }
