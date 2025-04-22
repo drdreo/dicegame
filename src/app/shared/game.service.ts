@@ -2,7 +2,7 @@ import { computed, effect, inject, Injectable, linkedSignal, signal } from "@ang
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { filter, map, Subject } from "rxjs";
-import { NotificationService } from "./notification.service";
+import { NotificationService } from "./notifications/notification.service";
 import { SocketService } from "./socket.service";
 import {
     AddBotAction,
@@ -34,7 +34,7 @@ export class GameService {
 
     roomList = toSignal(
         this.socketService.messages$.pipe(
-            filter((msg) => msg.type === "get_room_list_result"),
+            filter((msg) => msg.type === "room_list_update"),
             map((msg) => msg.data)
         )
     );
@@ -88,12 +88,14 @@ export class GameService {
         if (!playerId || !gameState) return undefined;
         return gameState.players[playerId];
     });
+
     enemy = computed(() => {
         const playerId = this.socketService.clientId;
         const gameState = this.gameState();
         if (!playerId || !gameState) return undefined;
         return Object.values(gameState.players).find((player) => player.id !== playerId);
     });
+
     currentPlayer = computed(
         () => {
             const state = this.gameState();
@@ -102,6 +104,13 @@ export class GameService {
         },
         { equal: (p1, p2) => p1?.id === p2?.id }
     );
+
+    winner = computed(() => {
+        const state = this.gameState();
+        if (!state) return undefined;
+        return state.winner || undefined;
+    });
+
     isYourTurn = computed(() => {
         const currentPlayer = this.currentPlayer();
         const player = this.player();

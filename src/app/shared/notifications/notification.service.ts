@@ -1,5 +1,6 @@
 import { ApplicationRef, createComponent, inject, Injectable } from "@angular/core";
 import { NotificationComponent } from "./notification.component";
+import { WinnerNotificationComponent } from "./winner-notification.component";
 
 @Injectable({
     providedIn: "root"
@@ -44,6 +45,20 @@ export class NotificationService {
                 this.destroyNotification(componentRef);
             }, options.autoClose);
         }
+    }
+
+    showWinner(name: string, hostElement: HTMLElement) {
+        const componentRef = createComponent(WinnerNotificationComponent, {
+            environmentInjector: this.appRef.injector,
+            hostElement: document.createElement("div")
+        });
+
+        componentRef.setInput("winner", name);
+
+        hostElement.appendChild(componentRef.location.nativeElement);
+        this.appRef.attachView(componentRef.hostView);
+
+        return componentRef;
     }
 
     private destroyNotification(componentRef: any) {

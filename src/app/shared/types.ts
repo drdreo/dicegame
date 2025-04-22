@@ -31,7 +31,7 @@ export type WebSocketActions =
  * Success events
  */
 export type RoomListSuccessEvent = {
-    type: "get_room_list_result";
+    type: "room_list_update";
     success: true;
     data: {
         roomId: string;

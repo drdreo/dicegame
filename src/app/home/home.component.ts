@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { lucideDot } from "@ng-icons/lucide";
 import { GameService } from "../shared/game.service";
-import { NotificationService } from "../shared/notification.service";
+import { NotificationService } from "../shared/notifications/notification.service";
 import { SocketService } from "../shared/socket.service";
 
 @Component({
