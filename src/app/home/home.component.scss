@@ -16,6 +16,19 @@
     max-width: 300px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(7px);
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+
+        .logo {
+            height: 50px;
+            wikdth: 50px;
+            margin-right: 1rem;
+        }
+    }
 }
 
 .form-group {
