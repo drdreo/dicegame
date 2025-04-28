@@ -1,0 +1,44 @@
+<ng-icon (click)="close()" class="close-icon" name="lucideX" />
+<h1>Dice Combinations</h1>
+
+<div class="combination-grid">
+    <div class="simple-combinations">
+        <h2>Combinations</h2>
+        <ul>
+            @for (combo of simpleDiceCombinations; track $index) {
+                <li>
+                    @for (die of combo.dice; track $index) {
+                        <ng-icon [name]="`lucideDice${die}`"></ng-icon>
+                    }
+                    <span class="score">{{ combo.score }}</span>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="multiple-combinations">
+        <h2>Multiples</h2>
+        <ul>
+            @for (combo of multipleDiceCombinations; track $index) {
+                <li>
+                    @for (die of combo.dice; track $index) {
+                        <ng-icon [name]="`lucideDice${die}`"></ng-icon>
+                    }
+                    <span class="score">{{ combo.score }}</span>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="extra-multiple-combinations">
+        <h6>Each additional die after 3 doubles the value</h6>
+        <ul>
+            @for (combo of extraMultipleDiceCombinations; track $index) {
+                <li>
+                    @for (die of combo.dice; track $index) {
+                        <ng-icon [name]="`lucideDice${die}`" [class.extra]="$index > 2"></ng-icon>
+                    }
+                    <span class="score">{{ combo.score }}</span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

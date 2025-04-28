@@ -2,7 +2,7 @@ import { computed, effect, inject, Injectable, linkedSignal, signal } from "@ang
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
 import { filter, map, Subject } from "rxjs";
-import { NotificationService } from "./notifications/notification.service";
+import { DialogService } from "./notifications/dialog.service";
 import { SocketService } from "./socket.service";
 import {
     AddBotAction,
@@ -30,7 +30,7 @@ function areDiceEqual(prev: number[], curr: number[]): boolean {
 export class GameService {
     private readonly router = inject(Router);
     private readonly socketService = inject(SocketService);
-    private readonly notificationService = inject(NotificationService);
+    private readonly notificationService = inject(DialogService);
 
     roomList = toSignal(
         this.socketService.messages$.pipe(

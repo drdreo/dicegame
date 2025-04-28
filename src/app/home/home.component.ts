@@ -5,12 +5,13 @@ import { Router } from "@angular/router";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { lucideDot } from "@ng-icons/lucide";
 import { GameService } from "../shared/game.service";
-import { NotificationService } from "../shared/notifications/notification.service";
+import { InstructionsHelpComponent } from "../shared/instructions/instructions-help/instructions-help.component";
+import { DialogService } from "../shared/notifications/dialog.service";
 import { SocketService } from "../shared/socket.service";
 
 @Component({
     selector: "app-home",
-    imports: [FormsModule, ReactiveFormsModule, NgIcon],
+    imports: [FormsModule, ReactiveFormsModule, NgIcon, InstructionsHelpComponent],
     providers: [provideIcons({ lucideDot })],
     templateUrl: "./home.component.html",
     styleUrl: "./home.component.scss",
@@ -19,7 +20,7 @@ import { SocketService } from "../shared/socket.service";
 export class HomeComponent implements OnInit {
     private readonly socketService = inject(SocketService);
     private readonly gameService = inject(GameService);
-    private readonly notificationService = inject(NotificationService);
+    private readonly notificationService = inject(DialogService);
     private readonly fb = inject(FormBuilder);
     private readonly router = inject(Router);
 
@@ -33,7 +34,8 @@ export class HomeComponent implements OnInit {
 
     constructor() {
         this.gameService.requestRoomList();
-        this.gameService.leaveRoom();
+        // TODO: is this intended?
+        // this.gameService.leaveRoom();
 
         this.gameService.joined$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
             console.log("Joined room:", roomId);
