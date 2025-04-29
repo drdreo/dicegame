@@ -1,4 +1,5 @@
 import { ApplicationRef, ComponentRef, createComponent, inject, Injectable, Type } from "@angular/core";
+import { isDescendant } from "../utils";
 import { NotificationComponent } from "./notification.component";
 import { WinnerNotificationComponent } from "./winner-notification.component";
 
@@ -76,16 +77,7 @@ export class DialogService {
         }
 
         const hostElement = document.createElement("div");
-        hostElement.style.maxWidth = "calc(100vw - 2rem)";
-        hostElement.style.maxHeight = "calc(100vh - 2rem)";
-        hostElement.style.overflow = "auto";
-        hostElement.style.boxSizing = "border-box";
-        hostElement.classList.add("dialog-host");
-        if (styles) {
-            Object.keys(styles).forEach((key) => {
-                hostElement.style[key as any] = styles[key] as string;
-            });
-        }
+        this.applyStyles(hostElement, styles);
         const componentRef = createComponent(component, {
             environmentInjector: this.appRef.injector,
             hostElement
@@ -106,13 +98,16 @@ export class DialogService {
         document.addEventListener("keydown", escHandler);
 
         const clickHandler = (event: MouseEvent) => {
-            // if (!hostElement.contains(event.target as Node)) {
-            //     this.destroyComponent(componentRef);
-            // }
-            console.log(event);
+            const isDesc = isDescendant(hostElement, event.target as HTMLElement);
+            if (!isDesc) {
+                this.destroyComponent(componentRef);
+            }
         };
 
-        document.addEventListener("click", clickHandler);
+        // Delay attaching the click handler to avoid instant closing
+        setTimeout(() => {
+            document.addEventListener("click", clickHandler);
+        }, 0);
 
         const originalDestroy = componentRef.destroy.bind(componentRef);
         componentRef.destroy = () => {
@@ -152,5 +147,21 @@ export class DialogService {
     closeAll(): void {
         this.openDialogs.forEach((ref) => this.destroyComponent(ref));
         this.openDialogs.clear();
+    }
+
+    private applyStyles(hostElement: HTMLDivElement, styles?: CSSProperties) {
+        // default styles
+        hostElement.style.maxWidth = "calc(100vw - 2rem)";
+        hostElement.style.maxHeight = "calc(100vh - 2rem)";
+        hostElement.style.overflow = "auto";
+        hostElement.style.boxSizing = "border-box";
+        hostElement.classList.add("dialog-host");
+
+        // custom styles
+        if (styles) {
+            Object.keys(styles).forEach((key) => {
+                hostElement.style[key as any] = styles[key] as string;
+            });
+        }
     }
 }
