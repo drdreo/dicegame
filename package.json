@@ -1,6 +1,6 @@
 {
-    "name": "dicegame",
-    "version": "0.0.0",
+    "name": "kcdice",
+    "version": "1.0.0",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -11,6 +11,10 @@
         "format": "prettier . --write"
     },
     "private": true,
+    "engines": {
+        "pnpm": ">=10.0.0",
+        "node": ">=20.0.0"
+    },
     "dependencies": {
         "@drdreo/dice-box-threejs": "^1.0.5",
         "@angular/animations": "^19.2.0",

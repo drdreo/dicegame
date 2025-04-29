@@ -1,0 +1,92 @@
+<ng-icon (click)="close()" class="close-icon" name="lucideX" />
+<h1>{{ pageTitle() }}</h1>
+
+<div class="page-content">
+    <!-- Page 1: Game Description -->
+    @if (currentPage() === 1) {
+        <div class="game-info">
+            <div class="game-image">
+                <img src="/images/game_info.png" alt="KCDice Game Info" />
+            </div>
+            <div class="game-description">
+                <p>
+                    Roll six dice to score points!
+                    <br />
+                    Each turn, you can roll and set aside scoring dice. If you can't
+                    score, you're "busted" and lose all points for that turn.
+                </p>
+                <p>
+                    <strong>Taking turns:</strong> Players take turns rolling dice and accumulating points. When a
+                    player decides to end their turn, their accumulated points are added to their total score.
+                </p>
+                <p>
+                    <strong>Scoring dice:</strong> After each roll, you must set aside at least one scoring die. If all
+                    dice score, you can roll <b>all six</b> dice again for bonus points.
+                </p>
+                <p><strong>Winning:</strong> The first player to reach the score goal is the victor.</p>
+            </div>
+        </div>
+    }
+
+    <!-- Page 2: Dice Combinations -->
+    @if (currentPage() === 2) {
+        <div class="combination-grid">
+            <div class="simple-combinations">
+                <h2>Combinations</h2>
+                <ul>
+                    @for (combo of simpleDiceCombinations; track $index) {
+                        <li>
+                            @for (die of combo.dice; track $index) {
+                                <ng-icon [name]="`lucideDice${die}`"></ng-icon>
+                            }
+                            <span class="score">{{ combo.score }}</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="multiple-combinations">
+                <h2>Multiples</h2>
+                <ul>
+                    @for (combo of multipleDiceCombinations; track $index) {
+                        <li>
+                            @for (die of combo.dice; track $index) {
+                                <ng-icon [name]="`lucideDice${die}`"></ng-icon>
+                            }
+                            <span class="score">{{ combo.score }}</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="extra-multiple-combinations">
+                <h6>Each additional die after 3 doubles the value</h6>
+                <ul>
+                    @for (combo of extraMultipleDiceCombinations; track $index) {
+                        <li>
+                            @for (die of combo.dice; track $index) {
+                                <ng-icon [name]="`lucideDice${die}`" [class.extra]="$index > 2"></ng-icon>
+                            }
+                            <span class="score">{{ combo.score }}</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="page-navigation">
+    <button
+        (click)="previousPage()"
+        [class.disabled]="!canGoPrevious()"
+        [disabled]="!canGoPrevious()"
+        class="nav-button"
+    >
+        <ng-icon name="lucideChevronLeft"></ng-icon>
+        Previous
+    </button>
+    <div class="page-indicator">{{ currentPage() }} / {{ totalPages }}</div>
+    <button (click)="nextPage()" [class.disabled]="!canGoNext()" [disabled]="!canGoNext()" class="nav-button">
+        Next
+        <ng-icon name="lucideChevronRight"></ng-icon>
+    </button>
+</div>
