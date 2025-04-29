@@ -1,5 +1,5 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
-import { ChangeDetectionStrategy, Component, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, output, signal } from "@angular/core";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
     lucideDice1,
@@ -8,6 +8,8 @@ import {
     lucideDice4,
     lucideDice5,
     lucideDice6,
+    lucideChevronLeft,
+    lucideChevronRight,
     lucideX
 } from "@ng-icons/lucide";
 
@@ -20,11 +22,20 @@ type Combination = {
     selector: "game-instructions",
     imports: [NgIcon],
     providers: [
-        provideIcons({ lucideDice1, lucideDice2, lucideDice3, lucideDice4, lucideDice5, lucideDice6, lucideX })
+        provideIcons({
+            lucideDice1,
+            lucideDice2,
+            lucideDice3,
+            lucideDice4,
+            lucideDice5,
+            lucideDice6,
+            lucideChevronLeft,
+            lucideChevronRight,
+            lucideX
+        })
     ],
     templateUrl: "./instructions.component.html",
     styleUrl: "./instructions.component.scss",
-    changeDetection: ChangeDetectionStrategy.OnPush,
     animations: [
         trigger("flyInOut", [
             state("in", style({ transform: "translateX(0)" })),
@@ -34,10 +45,17 @@ type Combination = {
     ],
     host: {
         "[@flyInOut]": '"in"'
-    }
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstructionsComponent {
     onClose = output<void>();
+    currentPage = signal(1);
+    totalPages = 2;
+
+    canGoPrevious = computed(() => this.currentPage() > 1);
+    canGoNext = computed(() => this.currentPage() < this.totalPages);
+    pageTitle = computed(() => (this.currentPage() === 1 ? "How to Play" : "Dice Combinations"));
 
     simpleDiceCombinations: Combination[] = [
         { dice: [1], score: 100 },
@@ -64,5 +82,19 @@ export class InstructionsComponent {
 
     close() {
         this.onClose.emit();
+    }
+
+    nextPage() {
+        const currentPage = this.currentPage();
+        if (currentPage < this.totalPages) {
+            this.currentPage.set(currentPage + 1);
+        }
+    }
+
+    previousPage() {
+        const currentPage = this.currentPage();
+        if (currentPage > 1) {
+            this.currentPage.set(currentPage - 1);
+        }
     }
 }
