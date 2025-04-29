@@ -55,7 +55,7 @@ export class InstructionsComponent {
 
     canGoPrevious = computed(() => this.currentPage() > 1);
     canGoNext = computed(() => this.currentPage() < this.totalPages);
-    pageTitle = computed(() => (this.currentPage() === 1 ? "How to Play" : "Dice Combinations"));
+    pageTitle = computed(() => (this.currentPage() === 1 ? "How to Play" : "Scoring Dice"));
 
     simpleDiceCombinations: Combination[] = [
         { dice: [1], score: 100 },
