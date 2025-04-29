@@ -8,8 +8,18 @@ import { InstructionsComponent } from "../instructions.component";
     selector: "game-instructions-help",
     imports: [NgIcon],
     providers: [provideIcons({ lucideCircleHelp })],
-    templateUrl: "./instructions-help.component.html",
-    styleUrl: "./instructions-help.component.scss",
+    template: ` <ng-icon (click)="openInstructions()" name="lucideCircleHelp" /> `,
+    styles: `
+        :host {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ddd;
+
+            &:hover {
+                color: #fff;
+            }
+        }
+    `,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InstructionsHelpComponent {
