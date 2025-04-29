@@ -1,16 +1,23 @@
+@use "./../../../utils.scss" as utils;
+
 :host {
     display: block;
     padding: 3rem;
     font-size: 1.5rem;
-
     background: rgba(0, 0, 0, 0.7);
     border-radius: var(--border-radius);
-    width: fit-content; // Changed from 100%
-    height: fit-content; // Changed from 100%
-    overflow: auto; // Changed from hidden
+    width: fit-content;
+    height: fit-content;
+    overflow: auto;
     color: white;
-    max-width: 95vw; // Added to prevent overflow
-    max-height: 95vh; // Added to prevent overflow
+    max-width: 95vw;
+    max-height: 95vh;
+
+    transform: translateX(-150%); // default offscreen to prevent flicker
+
+    @include utils.mobile() {
+        font-size: 1rem;
+    }
 }
 
 .close-icon {
@@ -27,6 +34,13 @@
         "simple multiple"
         "simple extra-multiple";
     gap: 1rem;
+
+    @include utils.mobile() {
+        grid-template:
+            "simple"
+            "multiple"
+            "extra-multiple";
+    }
 }
 
 .simple-combinations {

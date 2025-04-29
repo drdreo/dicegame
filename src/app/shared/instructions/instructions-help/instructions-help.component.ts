@@ -23,7 +23,7 @@ export class InstructionsHelpComponent {
                 left: "1rem"
             }
         });
-        compRef.instance.onClose.subscribe(() => {
+        compRef?.instance.onClose.subscribe(() => {
             console.log("Instructions closed");
             this.notificationService.destroyComponent(compRef);
         });

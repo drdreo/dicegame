@@ -70,13 +70,17 @@ export class DialogService {
         return componentRef;
     }
 
-    openComponent<T>(component: Type<T>, { styles }: DialogOptions): ComponentRef<T> {
+    openComponent<T>(component: Type<T>, { styles }: DialogOptions): ComponentRef<T> | undefined {
         if (this.openDialogs.has(component)) {
-            console.log("Component already open");
-            return this.openDialogs.get(component) as ComponentRef<T>;
+            return;
         }
 
         const hostElement = document.createElement("div");
+        hostElement.style.maxWidth = "calc(100vw - 2rem)";
+        hostElement.style.maxHeight = "calc(100vh - 2rem)";
+        hostElement.style.overflow = "auto";
+        hostElement.style.boxSizing = "border-box";
+        hostElement.classList.add("dialog-host");
         if (styles) {
             Object.keys(styles).forEach((key) => {
                 hostElement.style[key as any] = styles[key] as string;
