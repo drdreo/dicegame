@@ -1,5 +1,6 @@
 import { ApplicationRef, ComponentRef, createComponent, inject, Injectable, Type } from "@angular/core";
 import { isDescendant } from "../utils";
+import { BustedNotificationComponent } from "./busted-notification.component";
 import { NotificationComponent } from "./notification.component";
 import { WinnerNotificationComponent } from "./winner-notification.component";
 
@@ -55,6 +56,22 @@ export class DialogService {
                 this.destroyComponent(componentRef);
             }, options.autoClose);
         }
+    }
+
+    showBusted(playerName: string) {
+        const componentRef = createComponent(BustedNotificationComponent, {
+            environmentInjector: this.appRef.injector,
+            hostElement: document.createElement("div")
+        });
+
+        componentRef.setInput("player", playerName);
+
+        document.body.appendChild(componentRef.location.nativeElement);
+        this.appRef.attachView(componentRef.hostView);
+
+        setTimeout(() => {
+            this.destroyComponent(componentRef);
+        }, 3500);
     }
 
     showWinner(name: string, hostElement: HTMLElement) {
