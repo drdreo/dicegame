@@ -1,3 +1,5 @@
+@use "../../vars" as vars;
+
 .lobby-container {
     display: flex;
     justify-content: center;
@@ -88,29 +90,13 @@ input {
     margin-top: 1.5rem;
 }
 
-.join-btn {
-    background-color: var(--color-primary);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.join-btn:disabled {
-    background-color: var(--color-primary);
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
 .recent-rooms {
     margin-top: 1.5rem;
     text-align: center;
 }
 
-.error {
-    color: #ff4d4d;
+.form-error {
+    color: vars.$color-error;
     font-size: 0.8rem;
     margin-top: 0.5rem;
 }

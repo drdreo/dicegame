@@ -15,7 +15,7 @@ import { lucideLogOut } from "@ng-icons/lucide";
                     <div class="banner-background"></div>
                     <div class="banner-content">{{ winner() }} won</div>
                 </div>
-                <button class="leave-button" (click)="leave()">
+                <button class="leave-button error" (click)="leave()">
                     Leave
                     <ng-icon name="lucideLogOut" />
                 </button>
@@ -41,7 +41,6 @@ import { lucideLogOut } from "@ng-icons/lucide";
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                gap: 24px;
                 overflow: visible;
             }
 
@@ -83,21 +82,6 @@ import { lucideLogOut } from "@ng-icons/lucide";
                 gap: 10px;
                 justify-content: center;
                 align-items: center;
-                padding: 12px 24px;
-
-                background-color: #e74c3c;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                font-size: 1.2rem;
-                font-weight: bold;
-                cursor: pointer;
-                transition: background-color 0.3s;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-
-                &:hover {
-                    background-color: #c0392b;
-                }
             }
         `
     ],

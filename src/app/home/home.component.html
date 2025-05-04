@@ -1,6 +1,5 @@
 <div class="lobby-container">
     <div class="lobby-content">
-
         <div class="header-container">
             <img alt="KCDice Logo" class="logo" src="/images/logo.png" />
             <h1>KCDice</h1>
@@ -12,7 +11,7 @@
                 <label for="playerName">Player Name*</label>
                 <input formControlName="playerName" id="playerName" placeholder="Enter your nickname" type="text" />
                 @if (lobbyForm.get("playerName")?.invalid && lobbyForm.get("playerName")?.touched) {
-                    <div class="error">Player name is required</div>
+                    <div class="form-error">Player name is required</div>
                 }
             </div>
 
@@ -35,10 +34,10 @@
                 <button
                     [disabled]="lobbyForm.invalid || !isConnected()"
                     [title]="!isConnected() ? 'Server is offline. Try again later.' : ''"
-                    class="join-btn"
+                    class="primary"
                     type="submit"
                 >
-                    Create / Join Room
+                    Join Room
                 </button>
             </div>
         </form>
@@ -63,3 +62,5 @@
 </div>
 
 <div id="kofi-container"></div>
+
+<app-winner-notification winner="test" />
