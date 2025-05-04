@@ -6,13 +6,14 @@ import {
     effect,
     ElementRef,
     inject,
+    input,
+    output,
     signal,
     viewChild
 } from "@angular/core";
 import { DiceBox, DiceEventData, DiceResults } from "@drdreo/dice-box-threejs";
-import { GameService } from "../../shared/game.service";
-import { isValidDice } from "../game.utils";
 import { DeviceService } from "../../shared/device.service";
+import { isValidDice } from "../game.utils";
 
 const DICE_SCALE = 75;
 
@@ -31,12 +32,12 @@ type SelectedOverlay = {
 })
 export class DiceBoardComponent implements AfterViewInit {
     private readonly deviceService = inject(DeviceService);
-    private readonly gameService = inject(GameService);
     private readonly diceContainer = viewChild<ElementRef>("diceContainer");
     private readonly hoverOverlay = viewChild<ElementRef>("hoverOverlay");
-    private readonly selectedDice = this.gameService.selectedDice;
-    private currentDice = this.gameService.currentDice;
     private diceBox = signal<DiceBox | undefined>(undefined);
+
+    currentDice = input<number[]>([]);
+    selectedDice = input<number[]>([]);
     selectedDiceOverlay = computed(() => {
         const _redraw = this.reDrawOverlay();
         const dice = this.selectedDice();
@@ -54,6 +55,8 @@ export class DiceBoardComponent implements AfterViewInit {
 
         return overlayDice;
     });
+    isRolling = output<boolean>();
+    onDiceClick = output<DiceEventData>();
 
     private reDrawOverlay = signal(false);
     private diceBoxConfig = {
@@ -116,9 +119,9 @@ export class DiceBoardComponent implements AfterViewInit {
         //     },
         // });
 
-        this.gameService.isRolling.set(true);
+        this.isRolling.emit(true);
         box.roll(notation).catch((e) => {
-            this.gameService.isRolling.set(false);
+            this.isRolling.emit(false);
             console.error(e);
         });
     }
@@ -132,7 +135,7 @@ export class DiceBoardComponent implements AfterViewInit {
         const box = new DiceBox(viewContainer, {
             ...this.diceBoxConfig,
             onRollComplete: (results: DiceResults) => {
-                this.gameService.isRolling.set(false);
+                this.isRolling.emit(false);
 
                 // if we already had selected (reconnected to game) re-draw overlay
                 if (this.selectedDice().length > 0) {
@@ -140,7 +143,7 @@ export class DiceBoardComponent implements AfterViewInit {
                 }
             },
             onDiceClick: (diceInfo: DiceEventData) => {
-                this.gameService.selectDice(diceInfo.id);
+                this.onDiceClick.emit(diceInfo);
             },
             onDiceHover: (diceInfo: DiceEventData | null) => {
                 if (this.deviceService.isTouchDevice) {

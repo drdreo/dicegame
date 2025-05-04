@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, ElementRef, inject } from "@angular/core";
+import { DiceEventData } from "@drdreo/dice-box-threejs";
 import { GameService } from "../shared/game.service";
 import { InstructionsHelpComponent } from "../shared/instructions/instructions-help/instructions-help.component";
 import { MusicPlaylistComponent } from "../shared/music-playlist/music-playlist.component";
@@ -31,6 +32,8 @@ export class RoomComponent {
     private readonly dialogService = inject(DialogService);
 
     started = this.gameService.started;
+    selectedDice = this.gameService.selectedDice;
+    currentDice = this.gameService.currentDice;
 
     constructor() {
         effect(() => {
@@ -39,5 +42,9 @@ export class RoomComponent {
             console.log("Winner:", winner);
             this.dialogService.showWinner(winner, this.ref.nativeElement);
         });
+    }
+
+    onDiceClick($event: DiceEventData) {
+        this.gameService.selectDice($event.id);
     }
 }

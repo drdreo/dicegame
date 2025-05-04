@@ -1,6 +1,6 @@
 <div class="game-container">
     <app-dice-aside class="game-aside-dice" />
-    <app-dice-board />
+    <app-dice-board (onDiceClick)="onDiceClick($event)" [currentDice]="currentDice()" [selectedDice]="selectedDice()" />
 
     <app-music-playlist />
     <app-game-stats class="game-stats" />
@@ -12,4 +12,3 @@
 </div>
 
 <game-instructions-help />
-
