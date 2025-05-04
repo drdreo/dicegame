@@ -7,12 +7,11 @@ import { lucideDot } from "@ng-icons/lucide";
 import { GameService } from "../shared/game.service";
 import { InstructionsHelpComponent } from "../shared/instructions/instructions-help/instructions-help.component";
 import { DialogService } from "../shared/notifications/dialog.service";
-import { WinnerNotificationComponent } from "../shared/notifications/winner-notification.component";
 import { SocketService } from "../shared/socket.service";
 
 @Component({
     selector: "app-home",
-    imports: [FormsModule, ReactiveFormsModule, NgIcon, InstructionsHelpComponent, WinnerNotificationComponent],
+    imports: [FormsModule, ReactiveFormsModule, NgIcon, InstructionsHelpComponent],
     providers: [provideIcons({ lucideDot })],
     templateUrl: "./home.component.html",
     styleUrl: "./home.component.scss",

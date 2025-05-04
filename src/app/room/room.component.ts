@@ -45,6 +45,9 @@ export class RoomComponent {
     }
 
     onDiceClick($event: DiceEventData) {
+        if (!this.gameService.isYourTurn()) {
+            return;
+        }
         this.gameService.selectDice($event.id);
     }
 }

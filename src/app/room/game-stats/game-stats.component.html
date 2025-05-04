@@ -1,33 +1,30 @@
 @let e = enemy();
 @let y = player();
 @let current = currentPlayer();
-@if (!y || !e) {
-    <p>Loading...</p>
-} @else {
-    <table>
-        <thead>
+
+<table>
+    <thead>
         <tr>
-            <th [class.current-player-indicator]="current?.id === y.id">You</th>
+            <th [class.current-player-indicator]="!!current && current?.id === y?.id">You</th>
             <th>Goal</th>
-            <th [class.current-player-indicator]="current?.id === e.id">{{ e.name }}</th>
+            <th [class.current-player-indicator]="!!current && current?.id === e?.id">{{ e?.name ?? "Enemy" }}</th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         <tr class="total">
-            <td class="total__you">{{ y.score }}</td>
+            <td class="total__you">{{ y?.score ?? 0 }}</td>
             <td class="total__goal">{{ goal() }}</td>
-            <td class="total__opponent">{{ e.score }}</td>
+            <td class="total__opponent">{{ e?.score ?? 0 }}</td>
         </tr>
         <tr class="round">
-            <td class="round__you">{{ y?.roundScore }}</td>
+            <td class="round__you">{{ y?.roundScore ?? 0 }}</td>
             <td>Round</td>
-            <td class="round__opponent">{{ e.roundScore }}</td>
+            <td class="round__opponent">{{ e?.roundScore ?? 0 }}</td>
         </tr>
         <tr class="selected">
-            <td class="selected__you">{{ y.turnScore }}</td>
+            <td class="selected__you">{{ y?.turnScore ?? 0 }}</td>
             <td>Selected</td>
-            <td class="selected__opponent">{{ e.turnScore }}</td>
+            <td class="selected__opponent">{{ e?.turnScore ?? 0 }}</td>
         </tr>
-        </tbody>
-    </table>
-}
+    </tbody>
+</table>
