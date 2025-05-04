@@ -1,4 +1,4 @@
 export const environment = {
     stage: "development",
-    gameServerUrl: "localhost:6969"
+    gameServerUrl: ":6969"
 };

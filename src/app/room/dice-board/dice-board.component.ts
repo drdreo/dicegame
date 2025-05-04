@@ -34,7 +34,7 @@ export class DiceBoardComponent implements AfterViewInit {
     private readonly deviceService = inject(DeviceService);
     private readonly diceContainer = viewChild<ElementRef>("diceContainer");
     private readonly hoverOverlay = viewChild<ElementRef>("hoverOverlay");
-    private diceBox = signal<DiceBox | undefined>(undefined);
+    diceBox = signal<DiceBox | undefined>(undefined);
 
     currentDice = input<number[]>([]);
     selectedDice = input<number[]>([]);
@@ -66,13 +66,18 @@ export class DiceBoardComponent implements AfterViewInit {
             texture: "wood",
             material: "wood"
         },
-        light_intensity: 1,
-        sounds: true,
+        light_intensity: 2.8,
+        sounds: !this.deviceService.isTouchDevice, // this seems to break it on iOS, only allow sounds on desktop
         gravity_multiplier: 300,
-        baseScale: 75, // dice size
+        baseScale: DICE_SCALE, // dice size
         strength: 0.5, // throw strength
         enableDiceSelection: true
     };
+
+    private options = {
+        useNumericDice: true
+    };
+
     private colors = ["#00ffcb", "#ff6600", "#1d66af", "#7028ed", "#c4c427", "#d81128"];
 
     constructor() {
@@ -106,7 +111,7 @@ export class DiceBoardComponent implements AfterViewInit {
             console.error("Dice box not initialized");
             return;
         }
-        const notation = createNotationFromValues(dice);
+        const notation = createNotationFromValues(dice, this.options.useNumericDice);
 
         const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)];
 
@@ -200,7 +205,10 @@ export class DiceBoardComponent implements AfterViewInit {
 }
 
 // returns something like `6d6@1,2,2,3,4,1`
-function createNotationFromValues(values: number[]): string {
+function createNotationFromValues(values: number[], useNumericDice = true): string {
     let count = values.length;
-    return `${count}d6@${values.join(",")}`;
+    const diceType: DiceType = useNumericDice ? "d6" : "dpip";
+    return `${count}${diceType}@${values.join(",")}`;
 }
+
+type DiceType = "d6" | "dpip";

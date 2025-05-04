@@ -82,7 +82,11 @@ export class SocketService {
 
     private connectWebSocket = () => {
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        const wsUrl = `${protocol}//${environment.gameServerUrl}/ws?game=dicegame`;
+        let gameServerUrl = environment.gameServerUrl;
+        if (environment.stage === "development") {
+            gameServerUrl = window.location.hostname + gameServerUrl;
+        }
+        const wsUrl = `${protocol}//${gameServerUrl}/ws?game=dicegame`;
 
         console.debug("Connecting to WebSocket server at:", wsUrl);
         this.socket = new WebSocket(wsUrl);

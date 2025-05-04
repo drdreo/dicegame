@@ -33,8 +33,8 @@ importers:
         specifier: ^19.2.0
         version: 19.2.3(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.7(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       '@drdreo/dice-box-threejs':
-        specifier: ^1.0.5
-        version: 1.0.5(cannon-es@0.20.0)(three@0.174.0)
+        specifier: ^1.1.0
+        version: 1.1.0(cannon-es@0.20.0)(three@0.176.0)
       '@ng-icons/core':
         specifier: ^31.2.0
         version: 31.2.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
@@ -48,8 +48,8 @@ importers:
         specifier: ~7.8.0
         version: 7.8.2
       three:
-        specifier: ^0.174.0
-        version: 0.174.0
+        specifier: ^0.176.0
+        version: 0.176.0
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
@@ -67,8 +67,8 @@ importers:
         specifier: ~5.1.0
         version: 5.1.7
       '@types/three':
-        specifier: ^0.174.0
-        version: 0.174.0
+        specifier: ^0.176.0
+        version: 0.176.0
       jasmine-core:
         specifier: ~5.6.0
         version: 5.6.0
@@ -783,15 +783,18 @@ packages:
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
 
+  '@dimforge/rapier3d-compat@0.12.0':
+    resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
+
   '@discoveryjs/json-ext@0.6.3':
     resolution: {integrity: sha512-4B4OijXeVNOPZlYA2oEwWOTkzyltLao+xbotHQeqN++Rv27Y6s818+n2Qkp8q+Fxhn0t/5lA5X1Mxktud8eayQ==}
     engines: {node: '>=14.17.0'}
 
-  '@drdreo/dice-box-threejs@1.0.5':
-    resolution: {integrity: sha512-93s00hvMYTiGx4MBaNSHQbCmvmuN+NryJZs7RxvvCNFGuybcJaefIJJNA5NVMzgNGDLnZIw4OVVDw6jqFm+P/w==}
+  '@drdreo/dice-box-threejs@1.1.0':
+    resolution: {integrity: sha512-BKQlSKLnNVlqvUQ9GUPah7QXoRiu+NkU75OG6Y4IuyLd1dd00pxjcz20mBbIXA9WITXIc1Y/zHuQ661hugXCdQ==}
     peerDependencies:
       cannon-es: ^0.20.0
-      three: ^0.143.0
+      three: ^0.176.0
 
   '@esbuild/aix-ppc64@0.25.1':
     resolution: {integrity: sha512-kfYGy8IdzTGy+z0vFGvExZtxkFlA4zAxgKEahG9KE1ScBjpQnFsNOX8KTU5ojNru5ed5CVoJYXFtoxaq5nFbjQ==}
@@ -1669,8 +1672,8 @@ packages:
   '@types/stats.js@0.17.3':
     resolution: {integrity: sha512-pXNfAD3KHOdif9EQXZ9deK82HVNaXP5ZIF5RP2QG6OQFNTaY2YIetfrE9t528vEreGQvEPRDDc8muaoYeK0SxQ==}
 
-  '@types/three@0.174.0':
-    resolution: {integrity: sha512-De/+vZnfg2aVWNiuy1Ldu+n2ydgw1osinmiZTAn0necE++eOfsygL8JpZgFjR2uHmAPo89MkxBj3JJ+2BMe+Uw==}
+  '@types/three@0.176.0':
+    resolution: {integrity: sha512-FwfPXxCqOtP7EdYMagCFePNKoG1AGBDUEVKtluv2BTVRpSt7b+X27xNsirPCTCqY1pGYsPUzaM3jgWP7dXSxlw==}
 
   '@types/webxr@0.5.21':
     resolution: {integrity: sha512-geZIAtLzjGmgY2JUi6VxXdCrTb99A7yP49lxLr2Nm/uIK0PkkxcEi4OGhoGDO4pxCf3JwGz2GiJL2Ej4K2bKaA==}
@@ -3910,8 +3913,8 @@ packages:
     peerDependencies:
       tslib: ^2
 
-  three@0.174.0:
-    resolution: {integrity: sha512-p+WG3W6Ov74alh3geCMkGK9NWuT62ee21cV3jEnun201zodVF4tCE5aZa2U122/mkLRmhJJUQmLLW1BH00uQJQ==}
+  three@0.176.0:
+    resolution: {integrity: sha512-PWRKYWQo23ojf9oZSlRGH8K09q7nRSWx6LY/HF/UUrMdYgN9i1e2OwJYHoQjwc6HF/4lvvYLC5YC1X8UJL2ZpA==}
 
   thunky@1.1.0:
     resolution: {integrity: sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==}
@@ -5209,12 +5212,14 @@ snapshots:
 
   '@colors/colors@1.5.0': {}
 
+  '@dimforge/rapier3d-compat@0.12.0': {}
+
   '@discoveryjs/json-ext@0.6.3': {}
 
-  '@drdreo/dice-box-threejs@1.0.5(cannon-es@0.20.0)(three@0.174.0)':
+  '@drdreo/dice-box-threejs@1.1.0(cannon-es@0.20.0)(three@0.176.0)':
     dependencies:
       cannon-es: 0.20.0
-      three: 0.174.0
+      three: 0.176.0
 
   '@esbuild/aix-ppc64@0.25.1':
     optional: true
@@ -5946,8 +5951,9 @@ snapshots:
 
   '@types/stats.js@0.17.3': {}
 
-  '@types/three@0.174.0':
+  '@types/three@0.176.0':
     dependencies:
+      '@dimforge/rapier3d-compat': 0.12.0
       '@tweenjs/tween.js': 23.1.3
       '@types/stats.js': 0.17.3
       '@types/webxr': 0.5.21
@@ -8406,7 +8412,7 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  three@0.174.0: {}
+  three@0.176.0: {}
 
   thunky@1.1.0: {}
 
