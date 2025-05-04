@@ -6,6 +6,7 @@ export type WebSocketSuccessEvent =
     | ReconnectSuccessEvent
     | AddBotSuccessEvent
     // game specific events
+    | BustedEvent
     | GameStateEvent;
 
 export type WebSocketErrorEvent =
@@ -85,7 +86,18 @@ export type AddBotSuccessEvent = {
  */
 export type GameStateEvent = {
     type: "game_state";
+    success: true;
     data: GameState;
+};
+
+export type BustedData = {
+    clientId: string;
+    name: string;
+};
+export type BustedEvent = {
+    type: "busted";
+    success: true;
+    data: BustedData;
 };
 
 /**

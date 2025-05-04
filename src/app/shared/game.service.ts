@@ -231,8 +231,6 @@ export class GameService {
         switch (message.type) {
             case "error":
                 this.notificationService.notify(message.error, { autoClose: 3500 });
-                // TODO: use busted
-                // this.notificationService.showBusted(message)
                 break;
             case "reconnect_result":
                 this.socketService.clientId = undefined;
@@ -253,6 +251,10 @@ export class GameService {
             case "reconnect_result":
                 this.handleJoinRoom(event.data);
                 this.reconnected$.next(event.data);
+                break;
+
+            case "busted":
+                this.notificationService.showBusted(event.data.name);
                 break;
 
             case "game_state":
