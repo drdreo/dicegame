@@ -166,7 +166,7 @@ export type GetRoomListAction = {
     data: {
         gameType: "dicegame";
     };
-}
+};
 
 export type ReconnectAction = {
     type: "reconnect";
