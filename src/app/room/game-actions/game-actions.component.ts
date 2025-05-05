@@ -26,17 +26,14 @@ export class GameActionsComponent implements OnDestroy {
 
     constructor() {
         this.hotkey.addShortcut("space").subscribe(() => {
-            console.log("space pressed");
             this.rollDice();
         });
 
         this.hotkey.addShortcut("s").subscribe(() => {
-            console.log("s pressed");
             this.setAsideAndContinue();
         });
 
         this.hotkey.addShortcut("f").subscribe(() => {
-            console.log("f pressed");
             this.setAsideAndEnd();
         });
     }

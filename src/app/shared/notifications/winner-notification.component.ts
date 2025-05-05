@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
-import { Router } from "@angular/router";
 import { animate, query, style, transition, trigger } from "@angular/animations";
+import { ChangeDetectionStrategy, Component, inject, input } from "@angular/core";
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import { lucideLogOut } from "@ng-icons/lucide";
+import { GameService } from "../game.service";
 
 @Component({
     selector: "app-winner-notification",
@@ -111,10 +111,10 @@ import { lucideLogOut } from "@ng-icons/lucide";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WinnerNotificationComponent {
-    private readonly router = inject(Router);
+    private readonly gameService = inject(GameService);
     winner = input.required<string>();
 
     leave() {
-        this.router.navigate(["/"]); // Navigate to home or lobby
+        this.gameService.leaveRoom();
     }
 }

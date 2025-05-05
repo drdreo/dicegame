@@ -1,54 +1,54 @@
-import { Injectable } from "@angular/core";
+import { effect, Injectable, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, filter, ReplaySubject, Subject } from "rxjs";
 import { environment } from "../../environments/environment";
-import { ReconnectAction, WebSocketActions, WebSocketMessage } from "./types";
+import {
+    JoinRoomSuccessData,
+    ReconnectAction,
+    WebSocketActions,
+    WebSocketMessage,
+    WebSocketSuccessEvent
+} from "./types";
 
 @Injectable({
     providedIn: "root"
 })
 export class SocketService {
+    joined$ = new Subject<JoinRoomSuccessData>();
+    reconnected$ = new Subject<JoinRoomSuccessData>();
+    clientId = signal<string | undefined | null>(sessionStorage.getItem("clientId"));
+    roomId = signal<string | undefined | null>(sessionStorage.getItem("roomId"));
     private socket: WebSocket | null = null;
     private _connectionStatus$ = new BehaviorSubject<number>(WebSocket.CLOSED);
     readonly connectionStatus = toSignal(this._connectionStatus$);
-    private _messages$ = new Subject<WebSocketMessage>();
+    private _messages$ = new ReplaySubject<WebSocketMessage>(1);
     readonly messages$ = this._messages$.asObservable();
+    successMessages$ = this._messages$.pipe(filter((msg) => msg.success));
 
     constructor() {
         this.connectWebSocket();
-    }
 
-    private _clientId: string | undefined = undefined;
+        this.successMessages$.subscribe((msg) => {
+            this.handleSuccessMessage(msg);
+        });
 
-    get clientId(): string | undefined {
-        const storedId = sessionStorage.getItem("clientId");
-        return storedId ?? this._clientId;
-    }
+        effect(() => {
+            const clientId = this.clientId();
+            if (clientId) {
+                sessionStorage.setItem("clientId", clientId);
+            } else {
+                sessionStorage.removeItem("clientId");
+            }
+        });
 
-    set clientId(id: string | undefined) {
-        if (id) {
-            sessionStorage.setItem("clientId", id);
-        } else {
-            sessionStorage.removeItem("clientId");
-        }
-
-        this._clientId = id;
-    }
-
-    private _roomId: string | undefined = undefined;
-
-    get roomId(): string | undefined {
-        const storedId = sessionStorage.getItem("roomId");
-        return storedId ?? this._roomId;
-    }
-
-    set roomId(id: string | undefined) {
-        if (id) {
-            sessionStorage.setItem("roomId", id);
-        } else {
-            sessionStorage.removeItem("roomId");
-        }
-        this._roomId = id;
+        effect(() => {
+            const roomId = this.roomId();
+            if (roomId) {
+                sessionStorage.setItem("roomId", roomId);
+            } else {
+                sessionStorage.removeItem("roomId");
+            }
+        });
     }
 
     sendMessage(message: WebSocketActions): void {
@@ -60,8 +60,8 @@ export class SocketService {
     }
 
     checkReconnect() {
-        const clientId = this.clientId;
-        const roomId = this.roomId;
+        const clientId = this.clientId();
+        const roomId = this.roomId();
 
         if (clientId && roomId && this.socket) {
             const message: ReconnectAction = {
@@ -91,10 +91,11 @@ export class SocketService {
         console.debug("Connecting to WebSocket server at:", wsUrl);
         this.socket = new WebSocket(wsUrl);
 
-        this.socket.onopen = () => {
-            console.debug("WebSocket connection established");
-            this._connectionStatus$.next(WebSocket.OPEN);
-            this.checkReconnect();
+        this.socket.onmessage = (event: MessageEvent<string>) => {
+            const messages = JSON.parse(event.data) as WebSocketMessage[];
+            for (const msg of messages) {
+                this._messages$.next(msg);
+            }
         };
 
         this.socket.onclose = () => {
@@ -107,11 +108,48 @@ export class SocketService {
             console.error("WebSocket Error: ", error);
         };
 
-        this.socket.onmessage = (event: MessageEvent<string>) => {
-            const messages = JSON.parse(event.data) as WebSocketMessage[];
-            for (const msg of messages) {
-                this._messages$.next(msg);
-            }
+        this.socket.onopen = () => {
+            console.debug("WebSocket connection established");
+            this._connectionStatus$.next(WebSocket.OPEN);
+
+            // Add a delay before checking reconnect to prevent subscription race conditions
+            setTimeout(() => {
+                this.checkReconnect();
+            }, 200);
         };
     };
+
+    private handleSuccessMessage(event: WebSocketSuccessEvent): void {
+        switch (event.type) {
+            case "join_room_result":
+                this.handleJoinRoom(event.data);
+                this.joined$.next(event.data);
+                break;
+            case "reconnect_result":
+                this.handleJoinRoom(event.data);
+                this.reconnected$.next(event.data);
+                break;
+        }
+    }
+
+    private handleJoinRoom(data: JoinRoomSuccessData): void {
+        if (!data) {
+            console.warn("Received join_room_result with no data");
+            return;
+        }
+
+        if (!data.clientId) {
+            console.warn("join_room_result message missing clientId:", data);
+            return;
+        }
+
+        if (!data.roomId) {
+            console.warn("join_room_result message missing roomId:", data);
+            return;
+        }
+
+        console.log("Joined room:", data.roomId);
+        this.clientId.set(data.clientId);
+        this.roomId.set(data.roomId);
+    }
 }

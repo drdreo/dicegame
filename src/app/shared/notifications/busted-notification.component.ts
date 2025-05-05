@@ -40,6 +40,7 @@ import { Component, input } from "@angular/core";
                 font-size: 1.2em;
                 line-height: 1.4;
                 margin: 0;
+                color: white;
             }
         `
     ]

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -33,16 +33,22 @@ export class HomeComponent implements OnInit {
     roomList = this.gameService.roomList;
 
     constructor() {
-        this.gameService.requestRoomList();
         // TODO: is this intended?
         // this.gameService.leaveRoom();
 
-        this.gameService.joined$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
+        effect(() => {
+            const isConnected = this.isConnected();
+            if (isConnected) {
+                this.gameService.requestRoomList();
+            }
+        });
+
+        this.socketService.joined$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
             console.log("Joined room:", roomId);
             this.navigateToRoom(roomId);
         });
 
-        this.gameService.reconnected$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
+        this.socketService.reconnected$.pipe(takeUntilDestroyed()).subscribe(({ roomId }) => {
             console.log("Reconnected to room:", roomId);
             // show notification and offer to rejoin game
             this.notificationService.notify(`Game still in progress. Rejoin '${roomId}'?`, {

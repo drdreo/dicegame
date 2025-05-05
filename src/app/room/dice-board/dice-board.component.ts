@@ -61,12 +61,12 @@ export class DiceBoardComponent implements AfterViewInit {
     private reDrawOverlay = signal(false);
     private diceBoxConfig = {
         theme_customColorset: {
-            background: "#d0b990",
+            background: "#857049",
             foreground: "#ffffff",
             texture: "wood",
             material: "wood"
         },
-        light_intensity: 2.8,
+        light_intensity: 5,
         sounds: !this.deviceService.isTouchDevice, // this seems to break it on iOS, only allow sounds on desktop
         gravity_multiplier: 300,
         baseScale: DICE_SCALE, // dice size

@@ -1,7 +1,7 @@
 import { computed, effect, inject, Injectable, linkedSignal, signal } from "@angular/core";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { Router } from "@angular/router";
-import { filter, map, Subject } from "rxjs";
+import { filter, map } from "rxjs";
 import { DialogService } from "./notifications/dialog.service";
 import { SocketService } from "./socket.service";
 import {
@@ -9,7 +9,6 @@ import {
     EndTurnAction,
     GetRoomListAction,
     JoinRoomAction,
-    JoinRoomSuccessData,
     LeaveRoomAction,
     RollDiceAction,
     SelectDiceAction,
@@ -79,18 +78,15 @@ export class GameService {
         { equal: areDiceEqual }
     );
 
-    joined$ = new Subject<JoinRoomSuccessData>();
-    reconnected$ = new Subject<JoinRoomSuccessData>();
-
     player = computed(() => {
-        const playerId = this.socketService.clientId;
+        const playerId = this.socketService.clientId();
         const gameState = this.gameState();
         if (!playerId || !gameState) return undefined;
         return gameState.players[playerId];
     });
 
     enemy = computed(() => {
-        const playerId = this.socketService.clientId;
+        const playerId = this.socketService.clientId();
         const gameState = this.gameState();
         if (!playerId || !gameState) return undefined;
         return Object.values(gameState.players).find((player) => player.id !== playerId);
@@ -233,8 +229,8 @@ export class GameService {
                 this.notificationService.notify(message.error, { autoClose: 3500 });
                 break;
             case "reconnect_result":
-                this.socketService.clientId = undefined;
-                this.socketService.roomId = undefined;
+                this.socketService.clientId.set(undefined);
+                this.socketService.roomId.set(undefined);
                 this.router.navigate(["/"]);
                 break;
             default:
@@ -244,43 +240,18 @@ export class GameService {
 
     private handleSuccessMessage(event: WebSocketSuccessEvent): void {
         switch (event.type) {
-            case "join_room_result":
-                this.handleJoinRoom(event.data);
-                this.joined$.next(event.data);
-                break;
-            case "reconnect_result":
-                this.handleJoinRoom(event.data);
-                this.reconnected$.next(event.data);
-                break;
-
             case "busted":
                 this.notificationService.showBusted(event.data.name);
                 break;
 
+            case "leave_room_result":
+                this.router.navigate(["/"]); // Navigate to home
+                break;
+            case "reconnect_result":
             case "game_state":
                 break;
             default:
                 console.debug("Unknown room event type:", event.type);
         }
-    }
-
-    private handleJoinRoom(data: JoinRoomSuccessData): void {
-        if (!data) {
-            console.warn("Received join_room_result with no data");
-            return;
-        }
-
-        if (!data.clientId) {
-            console.warn("join_room_result message missing clientId:", data);
-            return;
-        }
-
-        if (!data.roomId) {
-            console.warn("join_room_result message missing roomId:", data);
-            return;
-        }
-
-        this.socketService.clientId = data.clientId;
-        this.socketService.roomId = data.roomId;
     }
 }
